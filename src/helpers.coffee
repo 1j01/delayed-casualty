@@ -15,3 +15,9 @@
 		(circleDistance_y - rect.h/2) ** 2
 
 	(cornerDistance_sq <= circle.r ** 2)
+
+# @dist = (a, b)->
+	# dx = a.x - b.x
+	# dy = a.x - b.x
+@dist = (dx, dy)->
+	sqrt(dx*dx + dy*dy)

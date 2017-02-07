@@ -82,7 +82,7 @@ class @Character extends MobileEntity
 		@against_wall_left = @collision(world, @x - 1, @y) and @collision(world, @x - 1, @y - @h + 5)
 		@against_wall_right = @collision(world, @x + 1, @y) and @collision(world, @x + 1, @y - @h + 5)
 		
-		attack = =>
+		check_for_player_hit = =>
 			for angle in [0..Math.PI*2] by 0.1
 				# for radius in [@swing_inner_radius, @swing_radius] by 5
 				for radius in [0..@swing_radius] by 5
@@ -97,26 +97,60 @@ class @Character extends MobileEntity
 							x > player.x and
 							y > player.y
 						)
-							console.log "Player STRIKES!"
-							# console.log "Player STRIKES with power", (radius/@swing_radius)*100 + "%"
-							player.color = "hsl(#{Math.random() * 360},  50%, 50%)"
-							return
+							# refactor: just return the player from here
+							return {
+								player
+								# dist: dist(player.y - @y, player.x - @x) # should work for now but
+								dist: dist(
+									(player.x + player.swing_from_x) - (@x + @swing_from_x)
+									(player.y + player.swing_from_y) - (@y + @swing_from_y)
+								)
+								angle: atan2(player.y - @y, player.x - @x)
+							}
 		
 		if @controller.attack
 			console.log "Player attacks"
-			attack()
-			# for player in world.players when player isnt @
-			# 	circle =
-			# 		x: @x + @swing_from_x
-			# 		y: @y + @swing_from_y
-			# 		radius: @swing_radius
-			# 	console.log("check if intersects", circle, player)
-			# 	if circle_intersects_rect(circle, player)
-			# 		console.log "Player STRIKES!"
-			# 		player.color = "hsl(#{Math.random() * 360},  50%, 50%)"
+			hit = check_for_player_hit()
+			if hit
+				console.log "Player STRIKES"
+				a = hit.angle / Math.PI / 2
+				# we want to transform 3/4..0..1/4 to 0%..100%
+				# we want to transform 3/4..1/2..1/4 to 0%..100%
+				# we can rotate to simplify
+				a -= 1/4
+				# now...
+				# we want to transform 0..-1/4..-1/2 to 0%..100%
+				# we want to transform 0..1/4..1/2 to 0%..100%
+				# but we don't get ~1/2; we need to modulo
+				a = a %% 1
+				# we want to transform 0..1/4..1/2 to 0%..100%
+				# we want to transform 1..3/4..1/2 to 0%..100%
+				if a > 1/2
+					console.log "(from the left)"
+					angle_factor = 1 - ((1-a) * 2)
+				else
+					console.log "(from the right)"
+					angle_factor = 1 - (a * 2)
+				
+				# console.log a, angle_power #hit.angle
+				
+				# TODO: should probably use vector length (or might want to do something else later like just vx or vy)
+				speed = abs(@vx) + abs(@vy)
+				speed_factor = speed / (@max_vx + @max_vy)
+				
+				dist_factor = hit.dist / @swing_radius # TODO: 1 should probably mean the player's *hitbox* is just within swing distance, not their center
+				power = (angle_factor + dist_factor + speed_factor) / 3
+				# console.log "Player STRIKES with power", (power)*100 + "%"
+				console.log "Power:", (power*100).toFixed(2) + "%" #power
+				console.log "  Angle factor:", angle_factor.toFixed(2)
+				console.log "  Dist factor:", dist_factor.toFixed(2)
+				console.log "  Speed factor:", speed_factor.toFixed(2)
+				hit.player.color = "hsl(#{Math.random() * 360},  50%, 50%)"
 		
 		if @controller.block
 			console.log "Player blocks"
+			hit = check_for_player_hit()
+			
 		
 		if @grounded
 			if @controller.start_jump
