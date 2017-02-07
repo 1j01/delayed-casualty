@@ -19,10 +19,10 @@ class @MobileEntity extends Entity
 		@vy += world.gravity
 		@vy = min(@max_vy, max(-@max_vy, @vy))
 		
-		for object in world.objects when object instanceof Platform
-			if @y + @h < object.y - object.fence_height
-				if @level_y > object.y
-					@level_y = object.y
+		# for object in world.objects when object instanceof Platform
+		# 	if @y + @h < object.y - object.fence_height
+		# 		if @level_y > object.y
+		# 			@level_y = object.y
 		
 		@footing = @collision(world, @x, @y + 1)
 		@grounded = not not @footing
@@ -97,13 +97,13 @@ class @MobileEntity extends Entity
 				x + @w > object.x and
 				y + @h > object.y
 			)
-				if object instanceof Platform
-					if object.y < @level_y
-						continue
-					else if @descend > 0 and not @descended_wall and not detecting_footing
-						@descended = yes
-						@level_y = object.y + 1 if @level_y <= object.y
-						continue
+				# if object instanceof Platform
+				# 	if object.y < @level_y
+				# 		continue
+				# 	else if @descend > 0 and not @descended_wall and not detecting_footing
+				# 		@descended = yes
+				# 		@level_y = object.y + 1 if @level_y <= object.y
+				# 		continue
 				return object
 		return no
 	
