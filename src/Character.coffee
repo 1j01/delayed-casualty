@@ -58,6 +58,7 @@ class @Character extends MobileEntity
 		@animator = new Animator {segments}
 		
 		@swing_radius = 50
+		@swing_inner_radius = 20
 		@swing_from_x = @w/2
 		@swing_from_y = @h/2
 	
@@ -81,11 +82,41 @@ class @Character extends MobileEntity
 		@against_wall_left = @collision(world, @x - 1, @y) and @collision(world, @x - 1, @y - @h + 5)
 		@against_wall_right = @collision(world, @x + 1, @y) and @collision(world, @x + 1, @y - @h + 5)
 		
+		attack = =>
+			for angle in [0..Math.PI*2] by 0.1
+				# for radius in [@swing_inner_radius, @swing_radius] by 5
+				for radius in [0..@swing_radius] by 5
+					# console.log radius, @swing_radius
+					for player in world.players when player isnt @
+						x = @x + @swing_from_x + Math.sin(angle) * radius
+						y = @y + @swing_from_y + Math.cos(angle) * radius
+						# if player.collision(world, x, y) # totally wrong thing
+						if (
+							x < player.x + player.w and
+							y < player.y + player.h and
+							x > player.x and
+							y > player.y
+						)
+							console.log "Player STRIKES!"
+							# console.log "Player STRIKES with power", (radius/@swing_radius)*100 + "%"
+							player.color = "hsl(#{Math.random() * 360},  50%, 50%)"
+							return
+		
 		if @controller.attack
-			console.log "Player attacks!"
+			console.log "Player attacks"
+			attack()
+			# for player in world.players when player isnt @
+			# 	circle =
+			# 		x: @x + @swing_from_x
+			# 		y: @y + @swing_from_y
+			# 		radius: @swing_radius
+			# 	console.log("check if intersects", circle, player)
+			# 	if circle_intersects_rect(circle, player)
+			# 		console.log "Player STRIKES!"
+			# 		player.color = "hsl(#{Math.random() * 360},  50%, 50%)"
 		
 		if @controller.block
-			console.log "Player blocks!"
+			console.log "Player blocks"
 		
 		if @grounded
 			if @controller.start_jump
@@ -175,7 +206,7 @@ class @Character extends MobileEntity
 				@run_animation_time = 0
 				if @against_wall_right or @against_wall_left
 					wall_slide_frame
-				else 
+				else
 					air_frame
 		
 		@animator.weight weighty_frame, 1
@@ -188,10 +219,14 @@ class @Character extends MobileEntity
 		
 		ctx.save()
 		ctx.beginPath()
-		ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_radius, 0, Math.PI * 2)
-		# ctx.fillStyle = "rgba(125, 255, 255, 0.2)"
 		ctx.fillStyle = @color
-		ctx.globalAlpha = 0.2
+		ctx.globalAlpha = 0.3
+		ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_radius, 0, Math.PI * 2)
+		ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_inner_radius, 0, Math.PI * 2, true)
+		# ctx.fill()
+		# ctx.beginPath()
+		# ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_inner_radius, 0, Math.PI * 2)
+		# ctx.fillStyle = "rgba(125, 255, 255, 0.2)"
 		ctx.fill()
 		ctx.restore()
 		
