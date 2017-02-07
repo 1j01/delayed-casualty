@@ -132,7 +132,6 @@ class @Character extends MobileEntity
 			console.log "  Angle factor:", percent(angle_factor)
 			console.log "  Dist factor:", percent(dist_factor)
 			console.log "  Speed factor:", percent(speed_factor)
-			player.color = "hsl(#{Math.random() * 360},  50%, 50%)"
 		
 		if @controller.attack
 			console.log "Player attacks"
@@ -140,6 +139,9 @@ class @Character extends MobileEntity
 			if hit_player
 				# console.log "and STRIKES"
 				calculate_hit_power(hit_player)
+				hit_player.being_hit = true
+				@hitting = true
+				@attacking = hit_player
 			else
 				console.log "and misses"
 		
@@ -149,6 +151,9 @@ class @Character extends MobileEntity
 			if hit_player
 				# console.log "and CONNECTS"
 				calculate_hit_power(hit_player)
+				hit_player.being_hit = true
+				@hitting = true
+				@blocking = hit_player
 			else
 				console.log "and misses"
 		
@@ -251,22 +256,41 @@ class @Character extends MobileEntity
 		draw_height = @normal_h * 1.6
 		@animator.draw ctx, draw_height, root_frames, @face, @facing
 		
-		ctx.save()
-		ctx.beginPath()
-		ctx.fillStyle = @color
-		ctx.globalAlpha = 0.3
-		ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_radius, 0, Math.PI * 2)
-		ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_inner_radius, 0, Math.PI * 2, true)
-		# ctx.fill()
-		# ctx.beginPath()
-		# ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_inner_radius, 0, Math.PI * 2)
-		# ctx.fillStyle = "rgba(125, 255, 255, 0.2)"
-		ctx.fill()
-		ctx.restore()
-		
-		if window.debug_levels
+		if @hitting
 			ctx.save()
-			ctx.font = "16px sans-serif"
-			ctx.fillStyle = "#f0f"
-			ctx.fillText @level_y, @x, @y
+			ctx.beginPath()
+			ctx.fillStyle = "white" #@color
+			ctx.globalAlpha = 0.8
+			player = @attacking or @blocking
+			angle = atan2(player.y - @y, player.x - @x)
+			# arc_length = Math.PI * 0.7
+			arc_length_a = Math.PI * 0.3
+			arc_length_b = Math.PI * 0.2
+			# ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_radius, angle - arc_length/2, angle + arc_length/2)
+			# ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_inner_radius, angle + arc_length/2, angle - arc_length/2, true)
+			if player.x > @x
+				ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_radius, angle - arc_length_a, angle + arc_length_b)
+				ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_inner_radius, angle + arc_length_b, angle - arc_length_a, true)
+			else
+				ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_radius, angle - arc_length_b, angle + arc_length_a)
+				ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_inner_radius, angle + arc_length_a, angle - arc_length_b, true)
+			ctx.fill()
 			ctx.restore()
+			@hitting = no
+		
+		if window.debug_mode
+			ctx.save()
+			ctx.beginPath()
+			ctx.fillStyle = @color
+			ctx.globalAlpha = 0.3
+			ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_radius, 0, Math.PI * 2)
+			ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_inner_radius, 0, Math.PI * 2, true)
+			ctx.fill()
+			ctx.restore()
+		
+		# if window.debug_mode
+		# 	ctx.save()
+		# 	ctx.font = "16px sans-serif"
+		# 	ctx.fillStyle = "#f0f"
+		# 	ctx.fillText @level_y, @x, @y
+		# 	ctx.restore()

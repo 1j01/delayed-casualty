@@ -7,7 +7,7 @@ class @World
 			@generate()
 	
 	generate: ->
-		window.debug_levels = location.hash.match /debug-levels/
+		window.debug_mode = location.hash.match /debug/
 		
 		if location.hash.match /test/
 			return @generate_test_map()

@@ -30,7 +30,7 @@ class @Platform extends Entity
 		ctx.fillStyle = pattern
 		ctx.fillRect @x, @y - max(@fence_height, 4), @w, @h
 		
-		if window.debug_levels
+		if window.debug_mode
 			ctx.save()
 			ctx.font = "16px sans-serif"
 			ctx.fillStyle = "#fff"
