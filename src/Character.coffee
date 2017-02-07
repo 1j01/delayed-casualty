@@ -60,7 +60,7 @@ class @Character extends MobileEntity
 		@swing_radius = 50
 		@swing_inner_radius = 20
 		@swing_from_x = @w/2
-		@swing_from_y = @h/2
+		@swing_from_y = @h/5
 	
 	step: (world)->
 		@invincibility -= 1

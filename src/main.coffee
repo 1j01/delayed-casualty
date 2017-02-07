@@ -53,6 +53,9 @@ animate ->
 	# ctx.globalAlpha = 0.3
 	ctx.fillStyle = "#f0f0f0"
 	ctx.fillRect(0, 0, canvas.width, canvas.height)
+	# for player in players when player.hitting
+	# 	ctx.fillStyle = "rgba(0, 0, 0, 0.1)"
+	# 	ctx.fillRect(0, 0, canvas.width, canvas.height)
 	ctx.fillStyle = "#000"
 	ctx.globalAlpha = min(1, max(0, view.cy / (100*16)))
 	ctx.fillRect(0, 0, canvas.width, canvas.height)
