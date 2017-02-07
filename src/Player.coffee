@@ -4,4 +4,4 @@ class @Player extends Character
 		@w ?= 16*1.7
 		@h ?= 16*2
 		super
-		@controller = new KeyboardController
+		@controller = new KeyboardController(@is_player_2)

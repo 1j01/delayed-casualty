@@ -2,7 +2,7 @@
 @world = new World()
 world.generate()
 
-view = {cx: world.player.x, cy: world.player.y}
+view = {cx: world.player_1.x, cy: world.player_1.y}
 
 # sunset = ctx.createLinearGradient 0, 0, 0, canvas.height
 # 
@@ -28,7 +28,7 @@ view_slowness = 8
 animate ->
 	return if loading
 	world.step() unless paused
-	{player} = world
+	player = world.player_1
 	view.width = canvas.width
 	view.height = canvas.height
 	#view_bound_x = canvas.width / 3
