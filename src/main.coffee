@@ -28,14 +28,21 @@ view_slowness = 8
 animate ->
 	return if loading
 	world.step() unless paused
-	player = world.player_1
+	{players} = world
 	view.width = canvas.width
 	view.height = canvas.height
 	#view_bound_x = canvas.width / 3
 	#view_bound_y = canvas.height / 3
 	#move_view_to_x = (view.cx + player.x - max(min(player.x, view_bound_x), -view_bound_x))
-	move_view_to_cx = player.x # (view.cx + max(min(player.x - view.cx, view_bound_x), -view_bound_x))
-	move_view_to_cy = player.y
+	#move_view_to_cx = (view.cx + max(min(player.x - view.cx, view_bound_x), -view_bound_x))
+	move_view_to_cx = 0
+	move_view_to_cy = 0
+	for player in players
+		move_view_to_cx += player.x
+		move_view_to_cy += player.y
+	move_view_to_cx /= players.length
+	move_view_to_cy /= players.length
+	
 	move_view_to_cx = min(400*16 - view.width/2, max(-400*16 + view.width/2, move_view_to_cx))
 	#move_view_to_cy = min(400*16, max(-400*16, move_view_to_cy))
 	view.cx += (move_view_to_cx - view.cx) / view_slowness

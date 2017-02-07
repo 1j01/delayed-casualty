@@ -21,7 +21,7 @@ class @World
 		@objects.push(@player_2 = new Player({x: 150, y: 50, is_player_2: yes}))
 		@player_1.find_free_position(@)
 		@player_2.find_free_position(@)
-		
+		@players = [@player_1, @player_2]
 	
 	step: ->
 		for object in @objects
