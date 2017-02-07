@@ -28,7 +28,7 @@ the default being to kick off and go downwards at an angle.
 
 If there's some kind of tie (draw/timeout.. maybe BOTH swords break at the same time both blocking??)
 there can be a sudden death final standoff/JUMPoff more like it HEH,
-with the jumping and slice-a-dicing and a no-no to the blocking
+with the jumping and slice-a-dicing and a no-no to the blocking.
 
 Note: screenshots leaked here: http://tvtropes.org/pmwiki/pmwiki.php/Main/SingleStrokeBattle
 
@@ -36,6 +36,8 @@ If both players attack and they get the same strike power they can both die
 
 * input
 	* a library for (especially multiplayer) gamepad and keyboard(/+mouse) assignment and remapping, including UI
+
+* standard match start countdowns and end screens
 
 * screens
 	* title

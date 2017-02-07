@@ -2,7 +2,7 @@
 @world = new World()
 world.generate()
 
-view = {cx: world.player_1.x, cy: world.player_1.y}
+view = {cx: world.player_1.x, cy: world.player_1.y, scale: 2}
 
 # sunset = ctx.createLinearGradient 0, 0, 0, canvas.height
 # 
@@ -59,6 +59,7 @@ animate ->
 	ctx.globalAlpha = 1
 	ctx.save()
 	ctx.translate(canvas.width/2 - view.cx, canvas.height/2 - view.cy)
+	ctx.scale(view.scale, view.scale)
 	world.draw(ctx, view)
 	ctx.restore()
 	ctx.save()

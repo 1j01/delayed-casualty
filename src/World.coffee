@@ -17,8 +17,8 @@ class @World
 		@objects.push(new Platform({y: 50}))
 		
 		# @objects.push(@player = new Player({x: 50, y: @objects[0].y}))
-		@objects.push(@player_1 = new Player({x: 50, y: 50}))
-		@objects.push(@player_2 = new Player({x: 150, y: 50, is_player_2: yes}))
+		@objects.push(@player_1 = new Player({x: 50, y: 50, color: "red"}))
+		@objects.push(@player_2 = new Player({x: 150, y: 50, color: "aqua", is_player_2: yes}))
 		@player_1.find_free_position(@)
 		@player_2.find_free_position(@)
 		@players = [@player_1, @player_2]

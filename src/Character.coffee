@@ -56,6 +56,10 @@ class @Character extends MobileEntity
 		@descended = no
 		@descended_wall = no
 		@animator = new Animator {segments}
+		
+		@swing_radius = 50
+		@swing_from_x = @w/2
+		@swing_from_y = @h/2
 	
 	step: (world)->
 		@invincibility -= 1
@@ -181,6 +185,15 @@ class @Character extends MobileEntity
 		root_frames = [stand_frame, stand_wide_frame, crouch_frame, slide_frame, wall_slide_frame, air_frame, run_frame]
 		draw_height = @normal_h * 1.6
 		@animator.draw ctx, draw_height, root_frames, @face, @facing
+		
+		ctx.save()
+		ctx.beginPath()
+		ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_radius, 0, Math.PI * 2)
+		# ctx.fillStyle = "rgba(125, 255, 255, 0.2)"
+		ctx.fillStyle = @color
+		ctx.globalAlpha = 0.2
+		ctx.fill()
+		ctx.restore()
 		
 		if window.debug_levels
 			ctx.save()
