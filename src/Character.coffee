@@ -84,73 +84,73 @@ class @Character extends MobileEntity
 		
 		check_for_player_hit = =>
 			for angle in [0..Math.PI*2] by 0.1
-				# for radius in [@swing_inner_radius, @swing_radius] by 5
 				for radius in [0..@swing_radius] by 5
-					# console.log radius, @swing_radius
 					for player in world.players when player isnt @
 						x = @x + @swing_from_x + Math.sin(angle) * radius
 						y = @y + @swing_from_y + Math.cos(angle) * radius
-						# if player.collision(world, x, y) # totally wrong thing
 						if (
 							x < player.x + player.w and
 							y < player.y + player.h and
 							x > player.x and
 							y > player.y
 						)
-							# refactor: just return the player from here
-							return {
-								player
-								# dist: dist(player.y - @y, player.x - @x) # should work for now but
-								dist: dist(
-									(player.x + player.swing_from_x) - (@x + @swing_from_x)
-									(player.y + player.swing_from_y) - (@y + @swing_from_y)
-								)
-								angle: atan2(player.y - @y, player.x - @x)
-							}
+							return player
+		
+		calculate_hit_power = (player)=>
+			
+			dist = hypot(
+				(player.x + player.swing_from_x) - (@x + @swing_from_x)
+				(player.y + player.swing_from_y) - (@y + @swing_from_y)
+			)
+			angle = atan2(player.y - @y, player.x - @x)
+			
+			a = angle / TAU
+			# we want to transform 3/4..0..1/4 to 0%..100%
+			# we want to transform 3/4..1/2..1/4 to 0%..100%
+			# we can rotate to simplify
+			a = (a - 1/4) %% 1
+			# now...
+			# we want to transform 0..1/4..1/2 to 0%..100%
+			# we want to transform 1..3/4..1/2 to 0%..100%
+			if a > 1/2
+				# from the left
+				angle_factor = 1 - ((1-a) * 2)
+			else
+				# from the right
+				angle_factor = 1 - (a * 2)
+			
+			# TODO: should probably use vector length (or might want to do something else later like just vx or vy)
+			# or might not want absolute vertical velocity or whatever
+			speed = abs(@vx) + abs(@vy)
+			speed_factor = speed / (@max_vx + @max_vy)
+			
+			dist_factor = dist / @swing_radius # TODO: 1 should probably mean the player's *hitbox* is just within swing distance, not their center
+			power = (angle_factor + dist_factor + speed_factor) / 3
+			
+			percent = (v)-> (v*100).toFixed() + "%"
+			console.log "Power:", percent(power)
+			console.log "  Angle factor:", percent(angle_factor)
+			console.log "  Dist factor:", percent(dist_factor)
+			console.log "  Speed factor:", percent(speed_factor)
+			player.color = "hsl(#{Math.random() * 360},  50%, 50%)"
 		
 		if @controller.attack
 			console.log "Player attacks"
-			hit = check_for_player_hit()
-			if hit
-				console.log "Player STRIKES"
-				a = hit.angle / Math.PI / 2
-				# we want to transform 3/4..0..1/4 to 0%..100%
-				# we want to transform 3/4..1/2..1/4 to 0%..100%
-				# we can rotate to simplify
-				a -= 1/4
-				# now...
-				# we want to transform 0..-1/4..-1/2 to 0%..100%
-				# we want to transform 0..1/4..1/2 to 0%..100%
-				# but we don't get ~1/2; we need to modulo
-				a = a %% 1
-				# we want to transform 0..1/4..1/2 to 0%..100%
-				# we want to transform 1..3/4..1/2 to 0%..100%
-				if a > 1/2
-					console.log "(from the left)"
-					angle_factor = 1 - ((1-a) * 2)
-				else
-					console.log "(from the right)"
-					angle_factor = 1 - (a * 2)
-				
-				# console.log a, angle_power #hit.angle
-				
-				# TODO: should probably use vector length (or might want to do something else later like just vx or vy)
-				speed = abs(@vx) + abs(@vy)
-				speed_factor = speed / (@max_vx + @max_vy)
-				
-				dist_factor = hit.dist / @swing_radius # TODO: 1 should probably mean the player's *hitbox* is just within swing distance, not their center
-				power = (angle_factor + dist_factor + speed_factor) / 3
-				# console.log "Player STRIKES with power", (power)*100 + "%"
-				console.log "Power:", (power*100).toFixed(2) + "%" #power
-				console.log "  Angle factor:", angle_factor.toFixed(2)
-				console.log "  Dist factor:", dist_factor.toFixed(2)
-				console.log "  Speed factor:", speed_factor.toFixed(2)
-				hit.player.color = "hsl(#{Math.random() * 360},  50%, 50%)"
+			hit_player = check_for_player_hit()
+			if hit_player
+				# console.log "and STRIKES"
+				calculate_hit_power(hit_player)
+			else
+				console.log "and misses"
 		
 		if @controller.block
 			console.log "Player blocks"
-			hit = check_for_player_hit()
-			
+			hit_player = check_for_player_hit()
+			if hit_player
+				# console.log "and CONNECTS"
+				calculate_hit_power(hit_player)
+			else
+				console.log "and misses"
 		
 		if @grounded
 			if @controller.start_jump
