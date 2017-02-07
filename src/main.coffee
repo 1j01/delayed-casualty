@@ -67,8 +67,9 @@ animate ->
 	ctx.fillRect(0, 0, canvas.width, canvas.height)
 	ctx.restore()
 	
-	if player.y > 100 * 16
-		world.generate()
+	for player in players
+		if player.y > 100 * 16
+			world.generate()
 
 pause = ->
 	paused = yes

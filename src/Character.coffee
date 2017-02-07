@@ -77,6 +77,12 @@ class @Character extends MobileEntity
 		@against_wall_left = @collision(world, @x - 1, @y) and @collision(world, @x - 1, @y - @h + 5)
 		@against_wall_right = @collision(world, @x + 1, @y) and @collision(world, @x + 1, @y - @h + 5)
 		
+		if @controller.attack
+			console.log "Player attacks!"
+		
+		if @controller.block
+			console.log "Player blocks!"
+		
 		if @grounded
 			if @controller.start_jump
 				# normal jumping
