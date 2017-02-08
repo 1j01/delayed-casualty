@@ -85,10 +85,10 @@ class @MobileEntity extends Entity
 		@previous_footing = @footing
 	
 	collision: (world, x, y, {type, detecting_footing}={})->
-		if @ instanceof Character and not type?
+		if @ instanceof Player and not type?
 			return yes if x < -400 * 16
 			return yes if x + @w > +400 * 16
-		for object in world.objects when object isnt @ and not (@ instanceof Character and object instanceof Character)
+		for object in world.objects when object isnt @ and not (@ instanceof Player and object instanceof Player)
 			if type? and not (object instanceof type)
 				continue
 			if (

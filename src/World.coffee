@@ -16,9 +16,8 @@ class @World
 		
 		@objects.push(ground = new Ground({y: 50}))
 		
-		# TODO: refactor, remove Player, rename Character to Player, pass in controller
-		@objects.push(@player_1 = new Player({x: -150, y: ground.y, face: +1, color: "red"}))
-		@objects.push(@player_2 = new Player({x: +150, y: ground.y, face: -1, color: "aqua", is_player_2: yes}))
+		@objects.push(@player_1 = new Player({x: -150, y: ground.y, face: +1, color: "red", controller: new KeyboardController(false)}))
+		@objects.push(@player_2 = new Player({x: +150, y: ground.y, face: -1, color: "aqua", controller: new KeyboardController(true)}))
 		@player_1.find_free_position(@)
 		@player_2.find_free_position(@)
 		@players = [@player_1, @player_2]
