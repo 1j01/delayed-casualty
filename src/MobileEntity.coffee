@@ -51,17 +51,14 @@ class @MobileEntity extends Entity
 			if @footing?.vx
 				@vx -= @footing.vx
 		
-		# push you back if you're off the front of a vehicle
-		# TODO: FIXME: doesn't work very well
-		# TODO: move away from both edges of moving and static footing
-		# (an exception might need to be added if there are gaps you can walk over)
-		if @footing?.vx
-			if @footing.vx > 0
-				if @x > @footing.x + @footing.w
-					@vx -= 1
-			else
-				if @x < @footing.x
-					@vx += 1
+		# push you back if you're off the edge of what you're standing on
+		# FIXME: awkward because there's no animation
+		unless @controller?.x < 0
+			if @x + @w*1/3 > @footing.x + @footing.w
+				@vx -= 0.5
+		unless @controller?.x > 0
+			if @x + @w*2/3 < @footing.x
+				@vx += 0.5
 		
 		xtg = @vx
 		if @footing?.vx?

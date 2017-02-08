@@ -43,10 +43,11 @@ class @Player extends MobileEntity
 		@dead = no
 		@sword_health ?= 100
 		
+		@w ?= 16*1
+		@h ?= 16*2
+		
 		super
 		
-		@w ?= 16*1.7
-		@h ?= 16*2
 		@normal_h ?= @h
 		@crouched_h ?= @h / 2
 		
@@ -339,12 +340,13 @@ class @Player extends MobileEntity
 		
 		if window.debug_mode
 			ctx.save()
-			ctx.beginPath()
 			ctx.fillStyle = @color
 			ctx.globalAlpha = 0.3
+			ctx.beginPath()
 			ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_radius, 0, Math.PI * 2)
 			ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_inner_radius, 0, Math.PI * 2, true)
 			ctx.fill()
+			ctx.fillRect(@x, @y, @w, @h)
 			ctx.restore()
 		
 		# if window.debug_mode
