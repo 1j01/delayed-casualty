@@ -1,38 +1,51 @@
 
 # brainstorming document
 
-You can attack and block. One hit kills.
-If only one person manages to connect with a block or attack, they would succeed obviously
-but if both players connect, one would win based on...
+Note: screenshots already leaked here: http://tvtropes.org/pmwiki/pmwiki.php/Main/SingleStrokeBattle
 
-1. angle: you want to be higher up than the other player
-2. timing: you want to hit as soon as the other player comes within your swing radius
-3. speed: you want to be moving faster than the other player
-4. character attributes that affect the amounts that the above factors factor in as factors probably with factors (factor factors, like factors of factors y'know? yeah, clear.)
+## Movement
+
+It's supposed to be slower paced than Lethal League.
+
+You'll stick to walls for wall jumps, and automatically kick off of a wall after some time,
+but you can control how (and probably do it earlier) by with the movement keys:
+
+* press away from the wall to do a long jump,
+* up to do a high jump (still kicking away a bit),
+* up and away to jump up and away more,
+* and down to fall downwards,
+* the default being to kick off and go downwards at an angle.
+
+## Fighting
+
+* Clash outcomes
+	* WIN/LOSE
+		* one player fails to attack or block
+		* one player wins the power contest
+	* DRAW
+		* a player successfully blocks
+		* both players block
+	* LEATHAL DRAW
+		* both players attack with (approximately) the same hit power
+		* both players block and BOTH swords break
+
+* Special match outcomes
+	* WIN/LOSE
+		* a player falls into an abyss
+	* DRAW
+		* time runs out (should a timer always be visible, or should it maybe only appear after a while?)
+	* LEATHAL DRAW
+		* both players fall into an abyss
+
+If the match is a draw,
+there can be a sudden death final standoff/JUMPoff more like it HEH,
+with the jumping and the slice-a-dicing and not so much of the blocking.
+
+## Characters
 
 Like Lethal League does really well,
 the characters should seem aesthetic at first,
 but as you play with them you start to notice significant differences.
-
-Movement: supposed to be slower paced than LL
-
-like wall jumps will have you stick to walls for some time and whatnot.
-
-You should automatically kick off of a wall after some time,
-but you can control how by the key(s) you press;
-away to do a long jump,
-up to do a high jump (and away a bit),
-up and away to jump up and away more,
-and down to fall downwards,
-the default being to kick off and go downwards at an angle.
-
-If there's some kind of tie (draw/timeout.. maybe BOTH swords break at the same time both blocking??)
-there can be a sudden death final standoff/JUMPoff more like it HEH,
-with the jumping and slice-a-dicing and a no-no to the blocking.
-
-Note: screenshots leaked here: http://tvtropes.org/pmwiki/pmwiki.php/Main/SingleStrokeBattle
-
-If both players attack and they get the same strike power they can both die
 
 * characters
 	* two hit wonder
@@ -57,21 +70,22 @@ If both players attack and they get the same strike power they can both die
 		* big sword
 		* good block, long delay?
 
-* matching areas for each character?
+* Matching areas for each character?
 
-* input
-	* a library for (especially multiplayer) gamepad and keyboard(/+mouse) assignment and remapping, including UI
+## TODO
 
-* screens
-	* title
-	* pause
-	* settings
-		* controls
-		* volume(s)
-	* credits
-		* Code | Isaiah Odhner
-		*  Art | Jadon Odhner
-		* Th-Th-Th-Th-Th-... That's all, folks!
+* Input
+	* A library for (especially multiplayer) gamepad and keyboard(/+mouse) assignment and remapping, including UI
 
-* slow things down
-* ledge grabbing
+* Screens
+	* Title
+	* Pause
+	* Settings
+		* Controls
+		* SFX volume
+		* Music volume
+	* Credits
+
+* Slow things down
+* Ledge grabbing
+* Maybe allow "sloppy inputs" for movement (i.e. trying to jump too early)?
