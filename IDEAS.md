@@ -37,8 +37,6 @@ If both players attack and they get the same strike power they can both die
 * input
 	* a library for (especially multiplayer) gamepad and keyboard(/+mouse) assignment and remapping, including UI
 
-* standard match start countdowns and end screens
-
 * screens
 	* title
 	* pause

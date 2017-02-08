@@ -39,19 +39,27 @@ class @Character extends MobileEntity
 		@jump_velocity ?= 12
 		@jump_velocity_air_control ?= 0.36
 		@air_control ?= 0.1
+		
 		@dead = no
 		@sword_health ?= 100
+		
 		super
-		@normal_h = @h
-		@crouched_h = @h / 2
+		
+		@normal_h ?= @h
+		@crouched_h ?= @h / 2
+		
 		@crouched = no
 		@sliding = no
+		
 		@y -= @h
+		
 		@invincibility = 0
 		# @liveliness_animation_time = 0
 		@run_animation_time = 0
-		@face = 1
-		@facing = 1
+		
+		@face ?= 1
+		@facing ?= @face
+		
 		@descend_pressed_last = no
 		@descend = 0
 		@descended = no
@@ -65,10 +73,10 @@ class @Character extends MobileEntity
 		@time_until_hit_effect = 0
 		@being_hit = no
 		
-		@swing_radius = 50
-		@swing_inner_radius = 20
-		@swing_from_x = @w/2
-		@swing_from_y = @h/5
+		@swing_radius ?= 50
+		@swing_inner_radius ?= 20
+		@swing_from_x ?= @w/2
+		@swing_from_y ?= @h/5
 	
 	step: (world)->
 		@invincibility -= 1
@@ -160,7 +168,7 @@ class @Character extends MobileEntity
 			else
 				console.log "and misses"
 		
-		unless @dead
+		unless @dead or not round_started
 			@face = +1 if @controller.x > 0
 			@face = -1 if @controller.x < 0
 			

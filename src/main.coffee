@@ -1,8 +1,9 @@
 
 @world = new World()
-world.generate()
 
-view = {cx: world.player_1.x, cy: world.player_1.y, scale: 2}
+view = {cx: 0, cy: 0, scale: 2}
+
+view_slowness = 8
 
 # sunset = ctx.createLinearGradient 0, 0, 0, canvas.height
 # 
@@ -22,8 +23,32 @@ view = {cx: world.player_1.x, cy: world.player_1.y, scale: 2}
 # gloom.addColorStop 1, '#122'
 
 paused = no
+window.round_started = no
+round_countdown_seconds = 3
 
-view_slowness = 8
+countdown_el = document.createElement("div")
+document.body.appendChild(countdown_el)
+countdown_el.classList.add("countdown")
+
+count_down = ->
+	remaining_seconds = round_countdown_seconds
+	iid = setInterval ->
+		if remaining_seconds > 0
+			countdown_el.classList.remove("now-fight")
+			countdown_el.textContent = "#{remaining_seconds}..."
+			remaining_seconds--
+		else
+			countdown_el.textContent = "FIGHT!"
+			window.round_started = yes
+			clearInterval(iid)
+			countdown_el.classList.add("now-fight")
+	, 1000
+
+start_round = ->
+	world.generate()
+	count_down()
+
+start_round()
 
 animate ->
 	return if loading

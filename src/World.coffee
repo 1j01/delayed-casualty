@@ -14,11 +14,11 @@ class @World
 		
 		@objects = []
 		
-		@objects.push(new Ground({y: 150}))
+		@objects.push(ground = new Ground({y: 50}))
 		
-		# @objects.push(@player = new Player({x: 50, y: @objects[0].y}))
-		@objects.push(@player_1 = new Player({x: 50, y: 50, color: "red"}))
-		@objects.push(@player_2 = new Player({x: 150, y: 50, color: "aqua", is_player_2: yes}))
+		# TODO: refactor, remove Player, rename Character to Player, pass in controller
+		@objects.push(@player_1 = new Player({x: -150, y: ground.y, face: +1, color: "red"}))
+		@objects.push(@player_2 = new Player({x: +150, y: ground.y, face: -1, color: "aqua", is_player_2: yes}))
 		@player_1.find_free_position(@)
 		@player_2.find_free_position(@)
 		@players = [@player_1, @player_2]
