@@ -160,7 +160,6 @@ class @Player extends MobileEntity
 				@hit_power = calculate_hit_power(hit_player)
 				@hit_power += 0.2 if hit_type is "block"
 				@hitting_player = hit_player
-				@swing_effect = true
 				hit_player.being_hit = true
 				hit_player.time_until_hit_effect = @time_until_hit_effect =
 					Math.max(hit_player.time_until_hit_effect, @time_until_hit_effect, 30)
@@ -169,6 +168,7 @@ class @Player extends MobileEntity
 					when "block" then @blocking = true
 			else
 				console.log "and misses"
+			@swing_effect = true
 		
 		unless @dead or not round_started
 			@face = +1 if @controller.x > 0
@@ -289,16 +289,19 @@ class @Player extends MobileEntity
 		if @swing_effect
 			ctx.save()
 			ctx.beginPath()
-			ctx.fillStyle = "white" #@color
+			ctx.fillStyle = if @hitting_player then "red" else "white"
 			ctx.globalAlpha = 0.8
-			player = @hitting_player
-			angle = atan2(player.y - @y, player.x - @x)
+			if @hitting_player
+				angle = atan2(@hitting_player.y - @y, @hitting_player.x - @x)
+			else
+				angle = atan2(0, @facing)
 			# arc_length = Math.PI * 0.7
 			arc_length_a = Math.PI * 0.3
 			arc_length_b = Math.PI * 0.2
 			# ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_radius, angle - arc_length/2, angle + arc_length/2)
 			# ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_inner_radius, angle + arc_length/2, angle - arc_length/2, true)
-			if player.x > @x
+			swing_right = if @hitting_player then @hitting_player.x > @x else @facing > 0
+			if swing_right
 				ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_radius, angle - arc_length_a, angle + arc_length_b)
 				ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_inner_radius, angle + arc_length_b, angle - arc_length_a, true)
 			else
