@@ -89,8 +89,9 @@ animate ->
 	ctx.fillRect(0, 0, canvas.width, canvas.height)
 	ctx.globalAlpha = 1
 	ctx.save()
-	ctx.translate(canvas.width/2 - view.cx, canvas.height/2 - view.cy)
+	ctx.translate(canvas.width/2, canvas.height/2)
 	ctx.scale(view.scale, view.scale)
+	ctx.translate(-view.cx, -view.cy)
 	world.draw(ctx, view)
 	ctx.restore()
 	ctx.save()
