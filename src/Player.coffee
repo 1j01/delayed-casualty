@@ -145,7 +145,7 @@ class @Player extends MobileEntity
 			
 			dist_factor = dist / @swing_radius # TODO: 1 should probably mean the player's *hitbox* is just within swing distance
 			# FIXME: dist_factor can go over 100% (up to ~1.2 currently)
-			power = (angle_factor + dist_factor + speed_factor) / 3
+			power = (angle_factor + dist_factor * 2 + speed_factor) / 4
 			
 			percent = (v)-> (v*100).toFixed() + "%"
 			console.log "Power:", percent(power)
@@ -290,6 +290,8 @@ class @Player extends MobileEntity
 		if @swing_effect
 			ctx.save()
 			ctx.beginPath()
+			# FIXME: shows as red when you hit outside of range until the effect takes place
+			# TODO: differentiated effect for blocking
 			ctx.fillStyle = if @hitting_player then "red" else "white"
 			ctx.globalAlpha = 0.8
 			if @hitting_player

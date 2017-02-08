@@ -4,6 +4,8 @@ class @World
 		@objects = []
 		@gravity = 0.8
 		@player_1_controller = new KeyboardController(false)
+		# TODO: support both controllers at once
+		# with a CoupledController or EitherController
 		# @player_2_controller = new KeyboardController(true)
 		@player_2_controller = new GamepadController()
 		window.addEventListener "hashchange", (e)=>

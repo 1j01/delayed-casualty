@@ -34,6 +34,31 @@ Note: screenshots leaked here: http://tvtropes.org/pmwiki/pmwiki.php/Main/Single
 
 If both players attack and they get the same strike power they can both die
 
+* characters
+	* two hit wonder
+		* two swords
+		* average power higher for two successful hits, lower for one
+		* due to delay, you generally have to hit on both sides of the circle of attack to be effective
+	* the bamboozler
+		* wields bamboo
+		* staff can be cut off at one or two points, so very little durability
+		* could be dynamic, being cut off based on the attacker's distance, which should encourage
+		* low damage probably
+	* knife guy
+		* really shit weapon
+		* is there any reason this should exist?
+		* yes
+		* to show how pro u are
+	* bird guy
+		* can slow himself down in the air (very well)
+		* does he glide when he does that?
+		* just better air control in general
+	* big guy
+		* big sword
+		* good block, long delay?
+
+* matching areas for each character?
+
 * input
 	* a library for (especially multiplayer) gamepad and keyboard(/+mouse) assignment and remapping, including UI
 
@@ -47,3 +72,6 @@ If both players attack and they get the same strike power they can both die
 		* Code | Isaiah Odhner
 		*  Art | Jadon Odhner
 		* Th-Th-Th-Th-Th-... That's all, folks!
+
+* slow things down
+* ledge grabbing
