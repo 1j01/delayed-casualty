@@ -39,7 +39,7 @@ class @Character extends MobileEntity
 		@jump_velocity ?= 12
 		@jump_velocity_air_control ?= 0.36
 		@air_control ?= 0.1
-		@health ?= 100
+		@sword_health ?= 100
 		super
 		@normal_h = @h
 		@crouched_h = @h / 2
@@ -56,6 +56,13 @@ class @Character extends MobileEntity
 		@descended = no
 		@descended_wall = no
 		@animator = new Animator {segments}
+		
+		@hitting_player = null
+		@hit_power = 0
+		@attacking = no
+		@blocking = no
+		@time_until_hit_effect = 0
+		@being_hit = no
 		
 		@swing_radius = 50
 		@swing_inner_radius = 20
@@ -132,30 +139,32 @@ class @Character extends MobileEntity
 			console.log "  Angle factor:", percent(angle_factor)
 			console.log "  Dist factor:", percent(dist_factor)
 			console.log "  Speed factor:", percent(speed_factor)
+			
+			return power
+		
+		take_swing = (hit_type)=>
+			hit_player = check_for_player_hit()
+			if hit_player
+				@hit_power = calculate_hit_power(hit_player)
+				@hit_power += 0.2 if hit_type is "block"
+				@hitting_player = hit_player
+				@swing_effect = true
+				hit_player.being_hit = true
+				hit_player.time_until_hit_effect = @time_until_hit_effect =
+					Math.max(hit_player.time_until_hit_effect, @time_until_hit_effect, 30)
+				switch hit_type
+					when "attack" then @attacking = true
+					when "block" then @blocking = true
+			else
+				console.log "and misses"
 		
 		if @controller.attack
 			console.log "Player attacks"
-			hit_player = check_for_player_hit()
-			if hit_player
-				# console.log "and STRIKES"
-				calculate_hit_power(hit_player)
-				hit_player.being_hit = true
-				@hitting = true
-				@attacking = hit_player
-			else
-				console.log "and misses"
+			take_swing("attack")
 		
 		if @controller.block
 			console.log "Player blocks"
-			hit_player = check_for_player_hit()
-			if hit_player
-				# console.log "and CONNECTS"
-				calculate_hit_power(hit_player)
-				hit_player.being_hit = true
-				@hitting = true
-				@blocking = hit_player
-			else
-				console.log "and misses"
+			take_swing("block")
 		
 		if @grounded
 			if @controller.start_jump
@@ -256,12 +265,12 @@ class @Character extends MobileEntity
 		draw_height = @normal_h * 1.6
 		@animator.draw ctx, draw_height, root_frames, @face, @facing
 		
-		if @hitting
+		if @swing_effect
 			ctx.save()
 			ctx.beginPath()
 			ctx.fillStyle = "white" #@color
 			ctx.globalAlpha = 0.8
-			player = @attacking or @blocking
+			player = @hitting_player
 			angle = atan2(player.y - @y, player.x - @x)
 			# arc_length = Math.PI * 0.7
 			arc_length_a = Math.PI * 0.3
@@ -276,7 +285,33 @@ class @Character extends MobileEntity
 				ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_inner_radius, angle + arc_length_a, angle - arc_length_b, true)
 			ctx.fill()
 			ctx.restore()
-			@hitting = no
+			@swing_effect = no
+		
+		if @time_until_hit_effect > 0
+			@time_until_hit_effect--
+		else
+			# console.log "mkay"
+			if @hitting_player
+				console.log @color, "vs", @hitting_player.color
+				console.log "power:", @hit_power, "vs", @hitting_player.hit_power
+				if @hit_power > @hitting_player.hit_power + 0.001
+					if @attacking
+						console.log "KILL"
+					else
+						console.log "BLOCKED"
+				else if @hit_power < @hitting_player.hit_power - 0.001
+					if @hitting_player.attacking
+						console.log "DEAD"
+					else
+						console.log "BLOCKED"
+				else
+					console.log "DRAW"
+			
+			@hitting_player = null
+			setTimeout => # FIXME HACK XXX
+				@hit_power = 0
+				@blocking = no
+				@attacking = no
 		
 		if window.debug_mode
 			ctx.save()
