@@ -5,53 +5,41 @@ view = {cx: 0, cy: 0, scale: 2}
 
 view_slowness = 8
 
-# sunset = ctx.createLinearGradient 0, 0, 0, canvas.height
-# 
-# sunset.addColorStop 0.000, 'rgb(0, 255, 242)'
-# sunset.addColorStop 0.442, 'rgb(107, 99, 255)'
-# sunset.addColorStop 0.836, 'rgb(255, 38, 38)'
-# #sunset.addColorStop 0.934, 'rgb(255, 135, 22)'
-# #sunset.addColorStop 1.000, 'rgb(255, 252, 0)'
-# sunset.addColorStop 1, 'rgb(255, 60, 30)'
-# 
-# gloom = ctx.createLinearGradient 0, 0, 0, canvas.height
-# 
-# #gloom.addColorStop 0.000, 'rgb(0, 155, 242)'
-# #gloom.addColorStop 0.442, 'rgb(107, 99, 255)'
-# #gloom.addColorStop 0, '#434'
-# gloom.addColorStop 0, '#133'
-# gloom.addColorStop 1, '#122'
-
 paused = no
 window.round_started = no
 window.round_over = no
-round_countdown_seconds = 0
+remaining_countdown_seconds = 0
 
 countdown_el = document.createElement("div")
 document.body.appendChild(countdown_el)
 countdown_el.classList.add("countdown")
 
-count_down = ->
-	remaining_seconds = round_countdown_seconds
-	iid = setInterval ->
-		if remaining_seconds > 0
-			countdown_el.classList.remove("now-fight")
-			countdown_el.textContent = "#{remaining_seconds}..."
-			remaining_seconds--
-		else
-			countdown_el.textContent = "FIGHT!"
-			window.round_started = yes
-			clearInterval(iid)
-			countdown_el.classList.add("now-fight")
-	, 1000
+round_end_el = document.createElement("div")
+document.body.appendChild(round_end_el)
+round_end_el.classList.add("round-end")
 
-start_round = ->
+count_down = ->
+	if remaining_countdown_seconds > 0
+		countdown_el.classList.remove("now-fight")
+		countdown_el.textContent = "#{remaining_countdown_seconds}..."
+		remaining_countdown_seconds--
+		setTimeout count_down, 1000
+	else
+		countdown_el.textContent = "FIGHT!"
+		window.round_started = yes
+		countdown_el.classList.add("now-fight")
+	console.log countdown_el.textContent
+
+init_round = ->
 	window.round_started = false
 	window.round_over = false
+	round_end_el.textContent = ""
+	
 	world.generate()
+	remaining_countdown_seconds = if location.hash.match(/(quick|fast)( |-|)start/i) then 0 else 3
 	count_down()
 
-start_round()
+init_round()
 
 animate ->
 	return if loading
@@ -100,13 +88,14 @@ animate ->
 	ctx.fillRect(0, 0, canvas.width, canvas.height)
 	ctx.restore()
 	
-	
 	for player in players
 		if player.y > 100
 			player.dead = true
 		if player.dead
-			window.round_over = true
-			setTimeout start_round, 500
+			unless window.round_over
+				window.round_over = true
+				setTimeout init_round, 1000
+				round_end_el.textContent = "Round over!"
 
 
 pause = ->

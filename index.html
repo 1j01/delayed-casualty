@@ -52,7 +52,8 @@ for(p=Object.getOwnPropertyNames(Math),i=0;k=p[i];i++){self[k]=Math[k]}TAU=PI*2}
 		text-shadow: .09em .09em 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
 		opacity: 0.5;
 	}
-	.countdown {
+	.countdown,
+	.round-end {
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -60,6 +61,19 @@ for(p=Object.getOwnPropertyNames(Math),i=0;k=p[i];i++){self[k]=Math[k]}TAU=PI*2}
 		text-align: center;
 		font-size: 150px;
 		font-family: serif;
+		color: white;
+		/*-webkit-text-stroke-width: 10px;
+		-webkit-text-stroke-color: black;*/
+		text-shadow:
+			2px 2px 0 #000,
+			3px 3px 0 #000,
+			4px 4px 0 #000,
+			5px 5px 0 #000,
+			6px 6px 0 #000,
+			-1px -1px 0 #000,  
+			1px -1px 0 #000,
+			-1px 1px 0 #000,
+			1px 1px 0 #000;
 	}
 	.countdown.now-fight {
 		animation: fade-out 0.3s;
