@@ -24,7 +24,8 @@ view_slowness = 8
 
 paused = no
 window.round_started = no
-round_countdown_seconds = 3
+window.round_over = no
+round_countdown_seconds = 0
 
 countdown_el = document.createElement("div")
 document.body.appendChild(countdown_el)
@@ -45,6 +46,7 @@ count_down = ->
 	, 1000
 
 start_round = ->
+	round_over = false
 	world.generate()
 	count_down()
 
@@ -96,9 +98,14 @@ animate ->
 	ctx.fillRect(0, 0, canvas.width, canvas.height)
 	ctx.restore()
 	
+	
 	for player in players
-		if player.y > 100 * 16
-			world.generate()
+		if player.y > 100
+			player.dead = true
+		if player.dead
+			window.round_over = true
+			setTimeout start_round, 500
+
 
 pause = ->
 	paused = yes
