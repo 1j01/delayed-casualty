@@ -78,7 +78,7 @@ animate ->
 	# ctx.fillRect(0, 0, canvas.width, canvas.height)
 	# ctx.fillStyle = sunset
 	# ctx.globalAlpha = 0.3
-	ctx.fillStyle = "#f0f0f0"
+	ctx.fillStyle = "#a9bcd6"
 	ctx.fillRect(0, 0, canvas.width, canvas.height)
 	# for player in players when player.hitting
 	# 	ctx.fillStyle = "rgba(0, 0, 0, 0.1)"
