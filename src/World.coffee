@@ -17,7 +17,7 @@ class @World
 		
 		@objects = []
 		
-		@objects.push(ground = new Ground({y: 0}))
+		@objects.push(ground = new Ground({y: 0, h: 1000}))
 		block = (cx, cy, w, h)=>
 			@objects.push(new Ground({x: cx - w/2, y: cy - h/2, w, h}))
 			@objects.push(new Ground({x: -cx - w/2, y: cy - h/2, w, h})) unless cx is 0
