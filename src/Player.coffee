@@ -75,7 +75,7 @@ class @Player extends MobileEntity
 		@time_until_hit_effect = 0
 		@being_hit = no
 		
-		@swing_radius ?= 50
+		@swing_radius ?= 60
 		@swing_inner_radius ?= 20
 		@swing_from_x ?= @w/2
 		@swing_from_y ?= @h/5
