@@ -16,6 +16,13 @@ but you can control how (and probably do it earlier) by with the movement keys:
 * and down to fall downwards,
 * the default being to kick off and go downwards at an angle.
 
+* Input
+	* A library for (especially multiplayer) gamepad and keyboard(/+mouse) assignment and remapping, including UI
+	* Allow early inputs where appropriate
+
+* Slow things down
+* Ledge grabbing
+
 ## Fighting
 
 * Clash outcomes
@@ -72,10 +79,7 @@ but as you play with them you start to notice significant differences.
 
 * Matching areas for each character?
 
-## TODO
-
-* Input
-	* A library for (especially multiplayer) gamepad and keyboard(/+mouse) assignment and remapping, including UI
+## Misc
 
 * Screens
 	* Title
@@ -85,7 +89,3 @@ but as you play with them you start to notice significant differences.
 		* SFX volume
 		* Music volume
 	* Credits
-
-* Slow things down
-* Ledge grabbing
-* Maybe allow "sloppy inputs" for movement (i.e. trying to jump too early)?
