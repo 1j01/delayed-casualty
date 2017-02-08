@@ -331,6 +331,9 @@ class @Player extends MobileEntity
 						console.log "DEAD"
 					else
 						console.log "BLOCKED"
+				# else if @attacking and @hitting_player.attacking
+				# 	console.log "LETHAL DRAW"
+				# 	@hitting_player.dead = true
 				else
 					console.log "DRAW"
 			
