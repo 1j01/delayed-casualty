@@ -46,7 +46,8 @@ count_down = ->
 	, 1000
 
 start_round = ->
-	round_over = false
+	window.round_started = false
+	window.round_over = false
 	world.generate()
 	count_down()
 
