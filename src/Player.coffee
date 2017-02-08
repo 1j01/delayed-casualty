@@ -318,7 +318,7 @@ class @Player extends MobileEntity
 			@time_until_hit_effect--
 		else
 			if @hitting_player
-				console.log @color, "vs", @hitting_player.color
+				console.log @name, "vs", @hitting_player.name
 				console.log "power:", @hit_power, "vs", @hitting_player.hit_power
 				if @hit_power > @hitting_player.hit_power + 0.001
 					if @attacking
