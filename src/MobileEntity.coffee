@@ -51,14 +51,37 @@ class @MobileEntity extends Entity
 			if @footing?.vx
 				@vx -= @footing.vx
 		
-		# push you back if you're off the edge of what you're standing on
-		# FIXME: awkward because there's no animation
-		unless @controller?.x < 0
-			if @x + @w*1/3 > @footing.x + @footing.w
-				@vx -= 0.5
-		unless @controller?.x > 0
-			if @x + @w*2/3 < @footing.x
-				@vx += 0.5
+		if @face?
+			# push you back or forwards if you're off the edge of what you're standing on
+
+			# # unless @controller?.x < 0
+			# if @face < 0
+			# 	if @x + @w*1/3 > @footing.x + @footing.w
+			# 		@vx -= 0.5
+			# # unless @controller?.x > 0
+			# if @face > 0
+			# 	if @x + @w*2/3 < @footing.x
+			# 		@vx += 0.5
+			# if @x + @w*1/3 > @footing.x + @footing.w
+			# 	@vx += 0.5 * @face
+			# if @x + @w*2/3 < @footing.x
+			# 	@vx += 0.5 * @face
+			
+			dist_off_of_ledge_to_push_off = @w * 1/3
+			dist_off_of_ledge_to_pull_on = @w * 1/2
+			push_off_ledge_force = 0.3
+			pull_onto_ledge_force = 0.5
+			
+			if @face < 0
+				if @x + dist_off_of_ledge_to_pull_on > @footing.x + @footing.w
+					@vx -= pull_onto_ledge_force
+				if @x + @w - dist_off_of_ledge_to_push_off < @footing.x
+					@vx -= push_off_ledge_force
+			if @face > 0
+				if @x + @w - dist_off_of_ledge_to_pull_on < @footing.x
+					@vx += pull_onto_ledge_force
+				if @x + dist_off_of_ledge_to_push_off > @footing.x + @footing.w
+					@vx += push_off_ledge_force
 		
 		xtg = @vx
 		if @footing?.vx?
