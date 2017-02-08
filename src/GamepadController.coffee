@@ -65,4 +65,4 @@ class @GamepadController
 		@genuflect = pressed("genuflect")
 		
 		delete @prev_buttons[k] for k, v of @prev_buttons
-		@prev_buttons[k] = {pressed: v.pressed, value: v.value} for k, v of gp.buttons when v
+		@prev_buttons[k] = {pressed: v.pressed, value: v.value} for k, v of gp.buttons when v if gp
