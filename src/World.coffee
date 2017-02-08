@@ -16,7 +16,16 @@ class @World
 		
 		@objects = []
 		
-		@objects.push(ground = new Ground({y: 50}))
+		@objects.push(ground = new Ground({y: 0}))
+		block = (cx, cy, w, h)=>
+			@objects.push(new Ground({x: cx - w/2, y: cy - h/2, w, h}))
+			@objects.push(new Ground({x: -cx - w/2, y: cy - h/2, w, h})) unless cx is 0
+		block(0, -100, 50, 100)
+		block(200, -250, 50, 150)
+		block(400, -250, 250, 50)
+		block(500, -250, 50, 150)
+		block(800, -125, 50, 150)
+		block(1200, -500, 50, 1000)
 		
 		@objects.push(@player_1 = new Player({x: -150, y: ground.y, face: +1, color: "red", controller: @player_1_controller}))
 		@objects.push(@player_2 = new Player({x: +150, y: ground.y, face: -1, color: "aqua", controller: @player_2_controller}))
