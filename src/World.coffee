@@ -3,6 +3,8 @@ class @World
 	constructor: ->
 		@objects = []
 		@gravity = 0.8
+		@player_1_controller = new KeyboardController(false)
+		@player_2_controller = new KeyboardController(true)
 		window.addEventListener "hashchange", (e)=>
 			@generate()
 	
@@ -16,8 +18,8 @@ class @World
 		
 		@objects.push(ground = new Ground({y: 50}))
 		
-		@objects.push(@player_1 = new Player({x: -150, y: ground.y, face: +1, color: "red", controller: new KeyboardController(false)}))
-		@objects.push(@player_2 = new Player({x: +150, y: ground.y, face: -1, color: "aqua", controller: new KeyboardController(true)}))
+		@objects.push(@player_1 = new Player({x: -150, y: ground.y, face: +1, color: "red", controller: @player_1_controller}))
+		@objects.push(@player_2 = new Player({x: +150, y: ground.y, face: -1, color: "aqua", controller: @player_2_controller}))
 		@player_1.find_free_position(@)
 		@player_2.find_free_position(@)
 		@players = [@player_1, @player_2]
