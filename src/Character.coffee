@@ -39,6 +39,7 @@ class @Character extends MobileEntity
 		@jump_velocity ?= 12
 		@jump_velocity_air_control ?= 0.36
 		@air_control ?= 0.1
+		@dead = no
 		@sword_health ?= 100
 		super
 		@normal_h = @h
@@ -120,10 +121,10 @@ class @Character extends MobileEntity
 			# we want to transform 0..1/4..1/2 to 0%..100%
 			# we want to transform 1..3/4..1/2 to 0%..100%
 			if a > 1/2
-				# from the left
+				# hitting from the left
 				angle_factor = 1 - ((1-a) * 2)
 			else
-				# from the right
+				# hitting from the right
 				angle_factor = 1 - (a * 2)
 			
 			# TODO: should probably use vector length (or might want to do something else later like just vx or vy)
@@ -131,7 +132,8 @@ class @Character extends MobileEntity
 			speed = abs(@vx) + abs(@vy)
 			speed_factor = speed / (@max_vx + @max_vy)
 			
-			dist_factor = dist / @swing_radius # TODO: 1 should probably mean the player's *hitbox* is just within swing distance, not their center
+			dist_factor = dist / @swing_radius # TODO: 1 should probably mean the player's *hitbox* is just within swing distance
+			# FIXME: dist_factor can go over 100% (up to ~1.2 currently)
 			power = (angle_factor + dist_factor + speed_factor) / 3
 			
 			percent = (v)-> (v*100).toFixed() + "%"
@@ -158,65 +160,67 @@ class @Character extends MobileEntity
 			else
 				console.log "and misses"
 		
-		if @controller.attack
-			console.log "Player attacks"
-			take_swing("attack")
-		
-		if @controller.block
-			console.log "Player blocks"
-			take_swing("block")
-		
-		if @grounded
-			if @controller.start_jump
-				# normal jumping
-				@vy = -@jump_velocity
-				@vx += @controller.x
-			else if @controller.genuflect
-				unless @crouched
-					@h = @crouched_h
-					@y += @normal_h - @crouched_h
-					@crouched = yes
-					@sliding = abs(@vx) > 5
-			else
-				# normal movement
-				@vx += @controller.x
-		else if @controller.start_jump
-			# wall jumping
-			if @against_wall_right
-				@vx = @jump_velocity * -0.7 unless @controller.x > 0
-				@vy = -@jump_velocity
-			else if @against_wall_left
-				@vx = @jump_velocity * +0.7 unless @controller.x < 0
-				@vy = -@jump_velocity
-			@face = sign(@vx)
-		else
-			# air control
-			@vx += @controller.x * @air_control
-			if @controller.extend_jump
-				@vy -= @jump_velocity_air_control
-			if @against_wall_right or @against_wall_left
-				if @descend > 0
-					@descended_wall = yes
+		unless @dead
+			@face = +1 if @controller.x > 0
+			@face = -1 if @controller.x < 0
+			
+			if @controller.attack
+				console.log "Player attacks"
+				take_swing("attack")
+			
+			if @controller.block
+				console.log "Player blocks"
+				take_swing("block")
+			
+			if @grounded
+				if @controller.start_jump
+					# normal jumping
+					@vy = -@jump_velocity
+					@vx += @controller.x
+				else if @controller.genuflect
+					unless @crouched
+						@h = @crouched_h
+						@y += @normal_h - @crouched_h
+						@crouched = yes
+						@sliding = abs(@vx) > 5
 				else
-					@vy *= 0.5 if @vy > 0
-			if @against_wall_right
-				@face = +1
-			if @against_wall_left
-				@face = -1
-		
-		if @crouched
-			unless @controller.genuflect and @grounded and ((not @sliding) or (@sliding and abs(@vx) > 2))
-				# TODO: check for collision before uncrouching
-				@h = @normal_h
-				@y -= @normal_h - @crouched_h
-				@crouched = no
-				@sliding = no
+					# normal movement
+					@vx += @controller.x
+			else if @controller.start_jump
+				# wall jumping
+				if @against_wall_right
+					@vx = @jump_velocity * -0.7 unless @controller.x > 0
+					@vy = -@jump_velocity
+				else if @against_wall_left
+					@vx = @jump_velocity * +0.7 unless @controller.x < 0
+					@vy = -@jump_velocity
+				@face = sign(@vx)
+			else
+				# air control
+				@vx += @controller.x * @air_control
+				if @controller.extend_jump
+					@vy -= @jump_velocity_air_control
+				if @against_wall_right or @against_wall_left
+					if @descend > 0
+						@descended_wall = yes
+					else
+						@vy *= 0.5 if @vy > 0
+				if @against_wall_right
+					@face = +1
+				if @against_wall_left
+					@face = -1
+			
+			if @crouched
+				unless @controller.genuflect and @grounded and ((not @sliding) or (@sliding and abs(@vx) > 2))
+					# TODO: check for collision before uncrouching
+					@h = @normal_h
+					@y -= @normal_h - @crouched_h
+					@crouched = no
+					@sliding = no
 		
 		super
 	
 	draw: (ctx, view)->
-		@face = +1 if @controller.x > 0
-		@face = -1 if @controller.x < 0
 		@facing += (@face - @facing) / 6
 		ctx.save()
 		ctx.translate(@x + @w/2, @y + @h + 2)
@@ -265,6 +269,13 @@ class @Character extends MobileEntity
 		draw_height = @normal_h * 1.6
 		@animator.draw ctx, draw_height, root_frames, @face, @facing
 		
+		if @dead
+			ctx.save()
+			ctx.globalCompositeOperation = "screen"
+			ctx.fillStyle = "red"
+			ctx.fillRect(@x, @y - 10, @w, @h + 15)
+			ctx.restore()
+		
 		if @swing_effect
 			ctx.save()
 			ctx.beginPath()
@@ -290,13 +301,13 @@ class @Character extends MobileEntity
 		if @time_until_hit_effect > 0
 			@time_until_hit_effect--
 		else
-			# console.log "mkay"
 			if @hitting_player
 				console.log @color, "vs", @hitting_player.color
 				console.log "power:", @hit_power, "vs", @hitting_player.hit_power
 				if @hit_power > @hitting_player.hit_power + 0.001
 					if @attacking
 						console.log "KILL"
+						@hitting_player.dead = true
 					else
 						console.log "BLOCKED"
 				else if @hit_power < @hitting_player.hit_power - 0.001
