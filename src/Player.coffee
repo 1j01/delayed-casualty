@@ -80,6 +80,10 @@ class @Player extends MobileEntity
 		@swing_inner_radius ?= 20
 		@swing_from_x ?= @w/2
 		@swing_from_y ?= @h/5
+		@min_time_between_swings = 20
+		@time_until_can_swing = 0
+		@do_swing = no
+		@do_swing_type = null
 		
 		@swing_effect = no
 		@swing_effect_toward_player = null
@@ -173,7 +177,9 @@ class @Player extends MobileEntity
 			{hit_player, got_in_the_way} = check_for_player_hit()
 			# TODO: maybe show different feedback if an object got in the way
 			
-			# TODO: limit swing rate
+			@swing_effect_type = hit_type
+			@swing_effect = true
+			
 			if hit_player
 				@hit_power = calculate_hit_power(hit_player)
 				@hit_power += 0.2 if hit_type is "block"
@@ -192,8 +198,6 @@ class @Player extends MobileEntity
 				console.log "but an object got in the way:", got_in_the_way
 			else
 				console.log "and misses"
-			@swing_effect_type = hit_type
-			@swing_effect = true
 		
 		unless @dead or not round_started
 			@face = +1 if @controller.x > 0
@@ -201,11 +205,22 @@ class @Player extends MobileEntity
 			
 			if @controller.attack
 				console.log "Player attacks"
-				take_swing("attack")
+				console.log "(delayed)" if @time_until_can_swing > 0
+				@do_swing = true
+				@do_swing_type = "attack"
 			
 			if @controller.block
 				console.log "Player blocks"
-				take_swing("block")
+				console.log "(delayed)" if @time_until_can_swing > 0
+				@do_swing = true
+				@do_swing_type = "block"
+			
+			if @time_until_can_swing > 0
+				@time_until_can_swing--
+			else if @do_swing
+				@do_swing = false
+				@time_until_can_swing = @min_time_between_swings
+				take_swing(@do_swing_type)
 			
 			if @grounded
 				if @controller.start_jump
