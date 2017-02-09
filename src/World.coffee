@@ -30,8 +30,8 @@ class @World
 		block(800, -125, 50, 150)
 		block(1200, -500, 50, 1000)
 		
-		@objects.push(@player_1 = new Player({x: -150, y: ground.y, face: +1, name: "Player 1", color: "red", controller: @player_1_controller}))
-		@objects.push(@player_2 = new Player({x: +150, y: ground.y, face: -1, name: "Player 2", color: "aqua", controller: @player_2_controller}))
+		@objects.push(@player_1 = new Player({x: -150, y: ground.y, face: +1, name: "Player 1", color: "#DD4B39", controller: @player_1_controller}))
+		@objects.push(@player_2 = new Player({x: +150, y: ground.y, face: -1, name: "Player 2", color: "#3C81F8", controller: @player_2_controller}))
 		@player_1.find_free_position(@)
 		@player_2.find_free_position(@)
 		@players = [@player_1, @player_2]

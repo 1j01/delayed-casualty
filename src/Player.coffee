@@ -384,6 +384,15 @@ class @Player extends MobileEntity
 			ctx.fillRect(@x, @y, @w, @h)
 			ctx.restore()
 		
+		ctx.save()
+		ctx.font = "12px sans-serif"
+		ctx.textAlign = "center"
+		ctx.fillStyle = @color
+		# ctx.fillText @name, @x + @w/2, @y - @h/2
+		# ctx.fillText @name, @x + @w/2, @y + @h * 1.8
+		ctx.fillText @name, @x + @w/2, @y + @h + @normal_h * 0.5
+		ctx.restore()
+		
 		# if window.debug_mode
 		# 	ctx.save()
 		# 	ctx.font = "16px sans-serif"
