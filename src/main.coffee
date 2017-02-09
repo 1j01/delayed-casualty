@@ -5,7 +5,7 @@ view = {cx: 0, cy: 0, scale: 2, default_scale: 2, slowness: 8, zoom_slowness: 8}
 
 paused = no
 window.round_started = no
-window.round_over = no
+window.round_ending = no
 remaining_countdown_seconds = 0
 
 countdown_el = document.createElement("div")
@@ -30,7 +30,7 @@ count_down = ->
 
 init_round = ->
 	window.round_started = false
-	window.round_over = false
+	window.round_ending = false
 	round_end_el.textContent = ""
 	
 	world.generate()
@@ -89,21 +89,19 @@ animate ->
 	dead_players = (player for player in players when player.dead)
 	
 	if live_players.length <= 1
-		# TODO: there should probably be a beat before the round ends
-		# so you can pay attention to the ridiculous death animation
-		# and if there's going to be other ways to die than by a living player,
-		# so we have a time to determine if both players are gonna die
-		unless window.round_over
-			window.round_over = true
-			setTimeout init_round, 1000
-			round_end_el.style.color = ""
-			if live_players[0]
-				round_end_el.textContent = "#{live_players[0].name} wins!".toUpperCase()
-				round_end_el.style.color = live_players[0].color
-			else
-				round_end_el.textContent = "Lethal draw!".toUpperCase()
-			console.log "Round over!"
-			console.log round_end_el.textContent
+		unless window.round_ending
+			window.round_ending = true
+			setTimeout =>
+				setTimeout init_round, 1000
+				round_end_el.style.color = ""
+				if live_players[0]
+					round_end_el.textContent = "#{live_players[0].name} wins!".toUpperCase()
+					round_end_el.style.color = live_players[0].color
+				else
+					round_end_el.textContent = "Lethal draw!".toUpperCase()
+				console.log "Round over!"
+				console.log round_end_el.textContent
+			, 1000
 
 
 pause = ->
