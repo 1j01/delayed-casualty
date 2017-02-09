@@ -80,6 +80,9 @@ class @Player extends MobileEntity
 		@swing_inner_radius ?= 20
 		@swing_from_x ?= @w/2
 		@swing_from_y ?= @h/5
+		
+		# @canvas = document.createElement("canvas")
+		# @ctx = @canvas.getContext("2d")
 	
 	step: (world)->
 		@invincibility -= 1
@@ -233,8 +236,6 @@ class @Player extends MobileEntity
 	
 	draw: (ctx, view)->
 		@facing += (@face - @facing) / 6
-		ctx.save()
-		ctx.translate(@x + @w/2, @y + @h + 2)
 		
 		unless window.animation_data?
 			data = {}
@@ -278,7 +279,36 @@ class @Player extends MobileEntity
 		
 		root_frames = [stand_frame, stand_wide_frame, crouch_frame, slide_frame, wall_slide_frame, air_frame, run_frame]
 		draw_height = @normal_h * 1.6
+		# draw_resolution_scale = 5
+		# @canvas.width = @w * draw_resolution_scale
+		# @canvas.height = draw_height * draw_resolution_scale
+		# @ctx.save()
+		# @ctx.fillStyle = "red"
+		# @ctx.fillRect(0, 0, 5, 5)
+		# @ctx.fillRect(@canvas.width-5, @canvas.height-5, 5, 5)
+		# # @ctx.translate()
+		# # @ctx.translate(@w/2, 0)
+		# @ctx.translate(-@w, -draw_height)
+		# # @ctx.translate(@canvas.width/2 - @w/2, @canvas.height)
+		# # @ctx.translate(-@canvas.width/2 + @w/2, -@canvas.height/2)
+		# @ctx.translate(@canvas.width/2, @canvas.height)
+		# @ctx.scale(draw_resolution_scale, draw_resolution_scale)
+		# @animator.draw @ctx, draw_height, root_frames, @face, @facing
+		# @ctx.restore()
+		
+		# ctx.save()
+		# # ctx.translate(@x + @w/2, @y + @h + 2)
+		# # ctx.translate(@x, @y + @h + 2)
+		# # ctx.translate(@x, @y - @canvas.height/2 + 2)
+		# ctx.translate(@x, @y - draw_height * 2 + 2)
+		# ctx.scale(1/draw_resolution_scale, 1/draw_resolution_scale)
+		# ctx.drawImage(@canvas, 0, 0)
+		# ctx.restore()
+		
+		ctx.save()
+		ctx.translate(@x + @w/2, @y + @h + 2)
 		@animator.draw ctx, draw_height, root_frames, @face, @facing
+		ctx.restore()
 		
 		if @dead
 			ctx.save()

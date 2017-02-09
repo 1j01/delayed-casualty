@@ -10,9 +10,10 @@ class @Animator
 			dots[color] = {x, y, color}
 		{width, height} = frame_a
 		{dots, width, height, srcID}
-		# NOTE: interpolating frames *can* produce bad states where a limb
+		# NOTE: interpolating frames can produce bad states where a limb
 		# is shorter than it's supposed to be, potentially jutting out.
 		# This can be remedied by stretching the limbs when drawing if need be.
+		# FIXME: player's knee looks pretty bad when flipping back and forth in air
 	
 	lerp_animation_frames: (frames, position, srcID)->
 		frame_a = frames[(~~(position) + 0) %% frames.length]
@@ -60,6 +61,7 @@ class @Animator
 	
 	draw: (ctx, draw_height, root_frames, face=1, facing=1)->
 		calc_frame = @calc root_frames, facing
+		ctx.save()
 		ctx.scale(draw_height / calc_frame.height, draw_height / calc_frame.height)
 		for segment in @segments
 			for color, dot of segment.image.dots
