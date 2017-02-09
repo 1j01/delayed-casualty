@@ -177,11 +177,8 @@ class @Player extends MobileEntity
 				switch hit_type
 					when "attack" then @attacking = true
 					when "block" then @blocking = true
-				# FIXME: can attack then block to be attacking and blocking
-				# and get the power advantage of blocking but still kill the other player
-				# should do this instead:
-				# @attacking = hit_type is "attack"
-				# @blocking = hit_type is "block"
+				@attacking = hit_type is "attack"
+				@blocking = hit_type is "block"
 			else
 				console.log "and misses"
 			@swing_effect_type = hit_type
