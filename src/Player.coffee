@@ -126,10 +126,8 @@ class @Player extends MobileEntity
 							if object
 								got_in_the_way = object
 							else
-								return player
-			if got_in_the_way
-				console.log "got in the way:", got_in_the_way
-				# TODO: maybe show different feedback if an object got in the way
+								return {hit_player: player}
+			return {got_in_the_way}
 		
 		calculate_hit_power = (player)=>
 			
@@ -172,7 +170,9 @@ class @Player extends MobileEntity
 			return power
 		
 		take_swing = (hit_type)=>
-			hit_player = check_for_player_hit()
+			{hit_player, got_in_the_way} = check_for_player_hit()
+			# TODO: maybe show different feedback if an object got in the way
+			
 			# TODO: limit swing rate
 			if hit_player
 				@hit_power = calculate_hit_power(hit_player)
@@ -188,6 +188,8 @@ class @Player extends MobileEntity
 					when "block" then @blocking = true
 				@attacking = hit_type is "attack"
 				@blocking = hit_type is "block"
+			else if got_in_the_way
+				console.log "but an object got in the way:", got_in_the_way
 			else
 				console.log "and misses"
 			@swing_effect_type = hit_type
