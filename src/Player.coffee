@@ -107,8 +107,11 @@ class @Player extends MobileEntity
 		@grounded = not not @footing
 		@against_wall_left = @collision(world, @x - 1, @y) and @collision(world, @x - 1, @y - @h + 5)
 		@against_wall_right = @collision(world, @x + 1, @y) and @collision(world, @x + 1, @y - @h + 5)
+		@against_wall = @against_wall_left or @against_wall_right
 		
 		check_for_player_hit = =>
+			# TODO: shouldn't be able to hit thru walls just 'cause they're thin enough
+			# might want some walls that are specifically hit-thru-able tho
 			for angle in [0..Math.PI*2] by 0.1
 				for radius in [0..@swing_radius] by 5
 					for player in world.players when player isnt @
@@ -224,7 +227,7 @@ class @Player extends MobileEntity
 				@vx += @controller.x * @air_control
 				if @controller.extend_jump
 					@vy -= @jump_velocity_air_control
-				if @against_wall_right or @against_wall_left
+				if @against_wall
 					if @descend > 0
 						@descended_wall = yes
 					else
@@ -278,7 +281,7 @@ class @Player extends MobileEntity
 						run_frame
 			else
 				@run_animation_time = 0
-				if @against_wall_right or @against_wall_left
+				if @against_wall
 					wall_slide_frame
 				else
 					air_frame
@@ -336,7 +339,13 @@ class @Player extends MobileEntity
 			if player
 				angle = atan2(player.y - @y, player.x - @x)
 				swing_right = player.x > @x
-			# TODO: else if @against_wall_right/left...
+			# NOTE: probably shouldn't be able to attack while wall-sliding
+			else if @against_wall_left and not @against_wall_right
+				angle = atan2(0, +1)
+				swing_right = +1
+			else if @against_wall_right and not @against_wall_left
+				angle = atan2(0, -1)
+				swing_right = -1
 			else
 				angle = atan2(0, @face)
 				swing_right = @face > 0

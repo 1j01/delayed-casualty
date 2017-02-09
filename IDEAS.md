@@ -32,7 +32,7 @@ but you can control how (and probably do it earlier) by with the movement keys:
 	* DRAW
 		* a player successfully blocks
 		* both players block
-	* LEATHAL DRAW
+	* LETHAL DRAW
 		* both players attack with (approximately) the same hit power
 		* both players block and BOTH swords break
 
@@ -41,7 +41,7 @@ but you can control how (and probably do it earlier) by with the movement keys:
 		* a player falls into an abyss
 	* DRAW
 		* time runs out (should a timer always be visible, or should it maybe only appear after a while?)
-	* LEATHAL DRAW
+	* LETHAL DRAW
 		* both players fall into an abyss
 
 If the match is a draw,
