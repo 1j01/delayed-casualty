@@ -3,6 +3,11 @@
 A simple fighter what with swords and death and all
 
 You can attack and block. One hit kills.
+
+There are no combos to memorize.
+There are no meters.
+<!-- You don't even need to try to face the other player. -->
+
 If only one person manages to connect with an attack, they succeed obviously,
 but if both players connect, one will win based on...
 

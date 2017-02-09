@@ -23,6 +23,7 @@ but you can control how (and probably do it earlier) by with the movement keys:
 * Slow things down
 * Ledge grabbing
 
+
 ## Fighting
 
 * Clash outcomes
@@ -47,6 +48,17 @@ but you can control how (and probably do it earlier) by with the movement keys:
 If the match is a draw,
 there can be a sudden death final standoff/JUMPoff more like it HEH,
 with the jumping and the slice-a-dicing and not so much of the blocking.
+
+* Maybe you should be able to hold down block beforehand rather than timing it,
+	in which case maybe the advantage should be just the perfect timing (or with a smaller bonus);
+	this could count as a separate thing you could do that's less effective but more reliable
+
+* Maybe the timing for blocking could be based on when the other player attacks?
+
+* Should the players' facing directions matter at all?
+  It would increase complexity as with anything, but it's already complex,
+  and maybe it should at least be a draw breaker.
+
 
 ## Characters
 
@@ -76,8 +88,40 @@ but as you play with them you start to notice significant differences.
 	* big guy
 		* big sword
 		* good block, long delay?
+	* hacksmith
+		* is 1337
+		* can regenerate blade
+	* hammurai
+		* is a hammurai
+		* weilds hammer
+	* hamurai
+		* is a hamurai
+		* weilds ham (or hammer)
+
+* character packs
+	* steven universe crossover
+		* lonely blade
+			* "my blade is the loneliest after all" except that he has two swords
+			* "my blade is the best in all the land" except wait the announcer says that
+			* boomerang blade! boomerang blade!
+			* 1000 mirror blade, hi-yah!
+		* bombo-bomb bomb-bombo
+			* has bombs probably
+		* gwood guy
+			* a good guy
+			* made of wood
+		* outgoing fist
+			* has fists
+			* flying punch!
+		* ice bear
+			* is a polar bear
+		* connie/stevonnie I *guess*
+			* but come on, LONELY BLADE
+	* lethal league crossover
+	* dank memes collection
 
 * Matching areas for each character?
+
 
 ## Misc
 
