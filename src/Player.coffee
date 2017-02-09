@@ -140,10 +140,10 @@ class @Player extends MobileEntity
 			# we want to transform 1..3/4..1/2 to 0%..100%
 			if a > 1/2
 				# hitting from the left
-				angle_factor = 1 - ((1-a) * 2)
+				angle_factor = 2 * a - 1
 			else
 				# hitting from the right
-				angle_factor = 1 - (a * 2)
+				angle_factor = 1 - a * 2
 			
 			# TODO: should probably use vector length (or might want to do something else later like just vx or vy)
 			# or might not want absolute vertical velocity or whatever
@@ -343,11 +343,9 @@ class @Player extends MobileEntity
 			else
 				angle = atan2(0, @face)
 				swing_right = @face > 0
-			# arc_length = Math.PI * 0.7
+			
 			arc_length_a = Math.PI * 0.3
 			arc_length_b = Math.PI * 0.2
-			# ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_radius, angle - arc_length/2, angle + arc_length/2)
-			# ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_inner_radius, angle + arc_length/2, angle - arc_length/2, true)
 			
 			ctx.translate(@x, @y)
 			ctx.translate(@swing_from_x, @swing_from_y)
@@ -357,12 +355,6 @@ class @Player extends MobileEntity
 			
 			if @swing_effect_type is "attack"
 				ctx.beginPath()
-				# if swing_right
-				# 	ctx.arc(0, 0, @swing_radius, angle - arc_length_a, angle + arc_length_b)
-				# 	ctx.arc(0, 0, @swing_inner_radius, angle + arc_length_b, angle - arc_length_a, true)
-				# else
-				# 	ctx.arc(0, 0, @swing_radius, angle - arc_length_b, angle + arc_length_a)
-				# 	ctx.arc(0, 0, @swing_inner_radius, angle + arc_length_a, angle - arc_length_b, true)
 				
 				ctx.arc(0, 0, @swing_radius,
 					angle - arc_length_b,
@@ -375,26 +367,7 @@ class @Player extends MobileEntity
 				ctx.fill()
 			else
 				block_effect_radius = @swing_radius / 2
-				# block_effect_arc_length = TAU / 3
 				ctx.beginPath()
-				# ctx.moveTo(@x + @swing_from_x + @face * @swing_radius/2, @y + @swing_from_y - @swing_radius/2)
-				# ctx.lineTo(@x + @swing_from_x + @face * @swing_radius/2, @y + @swing_from_y + @swing_radius/2)
-				# ctx.moveTo(
-				# 	@x + @swing_from_x + sin(angle + block_effect_arc_length/2) * block_effect_radius
-				# 	@y + @swing_from_y + cos(angle + block_effect_arc_length/2) * block_effect_radius
-				# )
-				# ctx.lineTo(
-				# 	@x + @swing_from_x + sin(angle - block_effect_arc_length/2) * block_effect_radius
-				# 	@y + @swing_from_y + cos(angle - block_effect_arc_length/2) * block_effect_radius
-				# )
-				# ctx.moveTo(
-				# 	@x + @swing_from_x + cos(angle + arc_length_a) * block_effect_radius
-				# 	@y + @swing_from_y + sin(angle + arc_length_a) * block_effect_radius
-				# )
-				# ctx.lineTo(
-				# 	@x + @swing_from_x + cos(angle - arc_length_b) * block_effect_radius
-				# 	@y + @swing_from_y + sin(angle - arc_length_b) * block_effect_radius
-				# )
 				ctx.moveTo(
 					cos(angle + arc_length_a) * block_effect_radius
 					sin(angle + arc_length_a) * block_effect_radius
