@@ -81,6 +81,10 @@ class @Player extends MobileEntity
 		@swing_from_x ?= @w/2
 		@swing_from_y ?= @h/5
 		
+		@swing_effect = no
+		@swing_effect_toward_player = null
+		@swing_effect_type = null
+		
 		# @canvas = document.createElement("canvas")
 		# @ctx = @canvas.getContext("2d")
 	
@@ -160,18 +164,27 @@ class @Player extends MobileEntity
 		
 		take_swing = (hit_type)=>
 			hit_player = check_for_player_hit()
+			# TODO: limit swing rate
 			if hit_player
 				@hit_power = calculate_hit_power(hit_player)
 				@hit_power += 0.2 if hit_type is "block"
 				@hitting_player = hit_player
+				@swing_effect_toward_player = hit_player
 				hit_player.being_hit = true
+				# FIXME: shouldn't really allow extending the hit timer, at least not indefinitely
 				hit_player.time_until_hit_effect = @time_until_hit_effect =
 					Math.max(hit_player.time_until_hit_effect, @time_until_hit_effect, 30)
 				switch hit_type
 					when "attack" then @attacking = true
 					when "block" then @blocking = true
+				# FIXME: can attack then block to be attacking and blocking
+				# and get the power advantage of blocking but still kill the other player
+				# should do this instead:
+				# @attacking = hit_type is "attack"
+				# @blocking = hit_type is "block"
 			else
 				console.log "and misses"
+			@swing_effect_type = hit_type
 			@swing_effect = true
 		
 		unless @dead or not round_started
@@ -318,31 +331,85 @@ class @Player extends MobileEntity
 			ctx.restore()
 		
 		if @swing_effect
+			# FIXME: one player's effects goes under the other player
+			player = @swing_effect_toward_player
 			ctx.save()
-			ctx.beginPath()
-			# FIXME: shows as red when you hit outside of range until the effect takes place
-			# TODO: differentiated effect for blocking
-			ctx.fillStyle = if @hitting_player then "red" else "white"
 			ctx.globalAlpha = 0.8
-			if @hitting_player
-				angle = atan2(@hitting_player.y - @y, @hitting_player.x - @x)
+			
+			if player
+				angle = atan2(player.y - @y, player.x - @x)
+				swing_right = player.x > @x
+			# TODO: else if @against_wall_right/left...
 			else
-				angle = atan2(0, @facing)
+				angle = atan2(0, @face)
+				swing_right = @face > 0
 			# arc_length = Math.PI * 0.7
 			arc_length_a = Math.PI * 0.3
 			arc_length_b = Math.PI * 0.2
 			# ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_radius, angle - arc_length/2, angle + arc_length/2)
 			# ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_inner_radius, angle + arc_length/2, angle - arc_length/2, true)
-			swing_right = if @hitting_player then @hitting_player.x > @x else @facing > 0
+			
+			ctx.translate(@x, @y)
+			ctx.translate(@swing_from_x, @swing_from_y)
 			if swing_right
-				ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_radius, angle - arc_length_a, angle + arc_length_b)
-				ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_inner_radius, angle + arc_length_b, angle - arc_length_a, true)
+				ctx.scale(-1, 1)
+				angle = TAU/2-angle
+			
+			if @swing_effect_type is "attack"
+				ctx.beginPath()
+				# if swing_right
+				# 	ctx.arc(0, 0, @swing_radius, angle - arc_length_a, angle + arc_length_b)
+				# 	ctx.arc(0, 0, @swing_inner_radius, angle + arc_length_b, angle - arc_length_a, true)
+				# else
+				# 	ctx.arc(0, 0, @swing_radius, angle - arc_length_b, angle + arc_length_a)
+				# 	ctx.arc(0, 0, @swing_inner_radius, angle + arc_length_a, angle - arc_length_b, true)
+				
+				ctx.arc(0, 0, @swing_radius,
+					angle - arc_length_b,
+					angle + arc_length_a, false)
+				ctx.arc(0, 0, @swing_inner_radius,
+					angle + arc_length_a,
+					angle - arc_length_b, true)
+				
+				ctx.fillStyle = if player then "red" else "white"
+				ctx.fill()
 			else
-				ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_radius, angle - arc_length_b, angle + arc_length_a)
-				ctx.arc(@x + @swing_from_x, @y + @swing_from_y, @swing_inner_radius, angle + arc_length_a, angle - arc_length_b, true)
-			ctx.fill()
+				block_effect_radius = @swing_radius / 2
+				# block_effect_arc_length = TAU / 3
+				ctx.beginPath()
+				# ctx.moveTo(@x + @swing_from_x + @face * @swing_radius/2, @y + @swing_from_y - @swing_radius/2)
+				# ctx.lineTo(@x + @swing_from_x + @face * @swing_radius/2, @y + @swing_from_y + @swing_radius/2)
+				# ctx.moveTo(
+				# 	@x + @swing_from_x + sin(angle + block_effect_arc_length/2) * block_effect_radius
+				# 	@y + @swing_from_y + cos(angle + block_effect_arc_length/2) * block_effect_radius
+				# )
+				# ctx.lineTo(
+				# 	@x + @swing_from_x + sin(angle - block_effect_arc_length/2) * block_effect_radius
+				# 	@y + @swing_from_y + cos(angle - block_effect_arc_length/2) * block_effect_radius
+				# )
+				# ctx.moveTo(
+				# 	@x + @swing_from_x + cos(angle + arc_length_a) * block_effect_radius
+				# 	@y + @swing_from_y + sin(angle + arc_length_a) * block_effect_radius
+				# )
+				# ctx.lineTo(
+				# 	@x + @swing_from_x + cos(angle - arc_length_b) * block_effect_radius
+				# 	@y + @swing_from_y + sin(angle - arc_length_b) * block_effect_radius
+				# )
+				ctx.moveTo(
+					cos(angle + arc_length_a) * block_effect_radius
+					sin(angle + arc_length_a) * block_effect_radius
+				)
+				ctx.lineTo(
+					cos(angle - arc_length_b) * block_effect_radius
+					sin(angle - arc_length_b) * block_effect_radius
+				)
+				ctx.lineWidth = 3
+				ctx.strokeStyle = if player then "yellow" else "white"
+				ctx.stroke()
 			ctx.restore()
 			@swing_effect = no
+			@swing_effect_toward_player = null
+			@swing_effect_type = null
 		
 		if @time_until_hit_effect > 0
 			@time_until_hit_effect--
