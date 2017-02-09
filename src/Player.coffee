@@ -343,17 +343,47 @@ class @Player extends MobileEntity
 		
 		ctx.save()
 		ctx.translate(@x + @w/2, @y + @h + 2)
-		@animator.draw ctx, draw_height, root_frames, @face, @facing
+		if @dead
+			calc_frame = @animator.calc root_frames, @facing
+			
+			# TODO: some blood
+			# TODO: maybe don't explode so completely ridiculously
+			unless @gibs
+				@gibs = for segment in @animator.segments
+					placement = calc_frame.dots[segment.a]
+					towards = calc_frame.dots[segment.b]
+					angle = atan2(towards.y - placement.y, towards.x - placement.x) - TAU/4
+					# {x: placement.x, y: placement.y, angle, image: segment.image}
+					# {placement, angle, image: segment.image}
+					{x: placement.x, y: placement.y, x_vel: (random() * 50 - 25), y_vel: (random() * 50 - 30), angle_vel: (random()-1/2), angle, image: segment.image}
+			
+			ctx.save()
+			ctx.scale(draw_height / calc_frame.height, draw_height / calc_frame.height)
+			for gib in @gibs
+				ctx.save()
+				ctx.translate(gib.x - calc_frame.width/2, gib.y - calc_frame.height)
+				ctx.rotate(gib.angle)
+				ctx.scale(@face, 1)
+				# ctx.translate(-pivot.x+segment.image.width/2, -pivot.y)
+				# ctx.drawImage(gib.image, -gib.image.width/2, 0)
+				ctx.drawImage(gib.image, -gib.image.width/2, -gib.image.height/2)
+				ctx.restore()
+				gib.angle += gib.angle_vel
+				gib.x += gib.x_vel
+				gib.y += gib.y_vel
+				gib.y_vel += 1
+			ctx.restore()
+		else
+			@animator.draw ctx, draw_height, root_frames, @face, @facing
 		ctx.restore()
 	
 	draw_fx: (ctx, view)->
-		if @dead
-			# TODO: better deadness
-			ctx.save()
-			ctx.globalCompositeOperation = "screen"
-			ctx.fillStyle = "red"
-			ctx.fillRect(@x, @y - 10, @w, @h + 15)
-			ctx.restore()
+		# if @dead
+		# 	ctx.save()
+		# 	ctx.globalCompositeOperation = "screen"
+		# 	ctx.fillStyle = "red"
+		# 	ctx.fillRect(@x, @y - 10, @w, @h + 15)
+		# 	ctx.restore()
 		
 		if @swing_effect
 			player = @swing_effect_toward_player
