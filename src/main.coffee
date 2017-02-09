@@ -1,9 +1,7 @@
 
 @world = new World()
 
-view = {cx: 0, cy: 0, scale: 2}
-
-view_slowness = 8
+view = {cx: 0, cy: 0, scale: 2, default_scale: 2, slowness: 8, zoom_slowness: 8}
 
 paused = no
 window.round_started = no
@@ -46,6 +44,8 @@ animate ->
 	world.step() unless paused
 	{players} = world
 	
+	# TODO: don't just try to center players,
+	# define and use level boundaries to make the view more useful
 	move_view_to_cx = 0
 	move_view_to_cy = 0
 	for player in players
@@ -54,9 +54,22 @@ animate ->
 	move_view_to_cx /= players.length
 	move_view_to_cy /= players.length
 	
+	# TODO: maybe replace this with some dynamic splitscreen; it doesn't really feel good
+	# might not be so bad if there's some scenery for spacial awareness though
+	keep_players_in_view_x = 120
+	keep_players_in_view_y = 60
+	view_scale_to = view.default_scale
+	for player in players
+		needed_scale_for_player = min(
+			canvas.width / 2 / (abs(player.x - move_view_to_cx) + keep_players_in_view_x)
+			canvas.height / 2 / (abs(player.y - move_view_to_cy) + keep_players_in_view_y)
+		)
+		view_scale_to = min(view_scale_to, needed_scale_for_player)
+	
 	move_view_to_cx = min(400*16 - canvas.width/2, max(-400*16 + canvas.width/2, move_view_to_cx)) # https://github.com/atom/language-coffee-script/issues/112
-	view.cx += (move_view_to_cx - view.cx) / view_slowness
-	view.cy += (move_view_to_cy - view.cy) / view_slowness
+	view.cx += (move_view_to_cx - view.cx) / view.slowness
+	view.cy += (move_view_to_cy - view.cy) / view.slowness
+	view.scale += (view_scale_to - view.scale) / view.zoom_slowness
 	
 	ctx.fillStyle = "#a9bcd6"
 	ctx.fillRect(0, 0, canvas.width, canvas.height)
