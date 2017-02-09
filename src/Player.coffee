@@ -322,8 +322,10 @@ class @Player extends MobileEntity
 		ctx.translate(@x + @w/2, @y + @h + 2)
 		@animator.draw ctx, draw_height, root_frames, @face, @facing
 		ctx.restore()
-		
+	
+	draw_fx: (ctx, view)->
 		if @dead
+			# TODO: better deadness
 			ctx.save()
 			ctx.globalCompositeOperation = "screen"
 			ctx.fillStyle = "red"
@@ -331,7 +333,6 @@ class @Player extends MobileEntity
 			ctx.restore()
 		
 		if @swing_effect
-			# FIXME: one player's effects goes under the other player
 			player = @swing_effect_toward_player
 			ctx.save()
 			ctx.globalAlpha = 0.8
@@ -339,7 +340,7 @@ class @Player extends MobileEntity
 			if player
 				angle = atan2(player.y - @y, player.x - @x)
 				swing_right = player.x > @x
-			# NOTE: probably shouldn't be able to attack while wall-sliding
+			# NOTE: probably shouldn't be able to attack while wall-sliding (or most characters shouldn't)
 			else if @against_wall_left and not @against_wall_right
 				angle = atan2(0, +1)
 				swing_right = +1

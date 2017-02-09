@@ -43,3 +43,5 @@ class @World
 	draw: (ctx, view)->
 		for object in @objects
 			object.draw?(ctx, view)
+		for object in @objects
+			object.draw_fx?(ctx, view)
