@@ -36,6 +36,20 @@ class @World
 		@player_2.find_free_position(@)
 		@players = [@player_1, @player_2]
 	
+	collision_point: (x, y, {type, filter}={})->
+		for object in world.objects
+			if type? and object not instanceof type
+				continue # as in don't continue with this one
+			if filter? and not filter(object)
+				continue # as in don't continue with this one
+			if (
+				x < object.x + object.w and
+				y < object.y + object.h and
+				x > object.x and
+				y > object.y
+			)
+				return object
+	
 	step: ->
 		for object in @objects
 			object.step?(@)

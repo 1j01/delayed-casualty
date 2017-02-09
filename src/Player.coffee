@@ -110,20 +110,26 @@ class @Player extends MobileEntity
 		@against_wall = @against_wall_left or @against_wall_right
 		
 		check_for_player_hit = =>
-			# TODO: shouldn't be able to hit thru walls just 'cause they're thin enough
-			# might want some walls that are specifically hit-thru-able tho
+			got_in_the_way = null
 			for angle in [0..Math.PI*2] by 0.1
 				for radius in [0..@swing_radius] by 5
+					x = @x + @swing_from_x + Math.sin(angle) * radius
+					y = @y + @swing_from_y + Math.cos(angle) * radius
 					for player in world.players when player isnt @
-						x = @x + @swing_from_x + Math.sin(angle) * radius
-						y = @y + @swing_from_y + Math.cos(angle) * radius
-						if (
-							x < player.x + player.w and
-							y < player.y + player.h and
-							x > player.x and
-							y > player.y
-						)
-							return player
+						player = world.collision_point(x, y, type: Player, filter: (player)=> player isnt @)
+						if player
+							for radius_2 in [0..radius] by 5
+								x_2 = @x + @swing_from_x + Math.sin(angle) * radius_2
+								y_2 = @y + @swing_from_y + Math.cos(angle) * radius_2
+								object = world.collision_point(x_2, y_2, filter: (object)=> object not instanceof Player and not object.hit_thru)
+								break if object
+							if object
+								got_in_the_way = object
+							else
+								return player
+			if got_in_the_way
+				console.log "got in the way:", got_in_the_way
+				# TODO: maybe show different feedback if an object got in the way
 		
 		calculate_hit_power = (player)=>
 			
@@ -343,10 +349,10 @@ class @Player extends MobileEntity
 			# NOTE: probably shouldn't be able to attack while wall-sliding (or most characters shouldn't)
 			else if @against_wall_left and not @against_wall_right
 				angle = atan2(0, +1)
-				swing_right = +1
+				swing_right = yes
 			else if @against_wall_right and not @against_wall_left
 				angle = atan2(0, -1)
-				swing_right = -1
+				swing_right = no
 			else
 				angle = atan2(0, @face)
 				swing_right = @face > 0
