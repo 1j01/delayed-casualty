@@ -355,7 +355,13 @@ class @Player extends MobileEntity
 					angle = atan2(towards.y - placement.y, towards.x - placement.x) - TAU/4
 					# {x: placement.x, y: placement.y, angle, image: segment.image}
 					# {placement, angle, image: segment.image}
-					{x: placement.x, y: placement.y, x_vel: (random() * 50 - 25), y_vel: (random() * 50 - 30), angle_vel: (random()-1/2), angle, image: segment.image}
+					{
+						x: placement.x, y: placement.y, angle
+						x_vel: rand(-20, 20)
+						y_vel: rand(-30, 10)
+						angle_vel: rand(-1/3, 1/3)
+						image: segment.image
+					}
 			
 			ctx.save()
 			ctx.scale(draw_height / calc_frame.height, draw_height / calc_frame.height)
