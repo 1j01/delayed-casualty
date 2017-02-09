@@ -84,12 +84,26 @@ animate ->
 	for player in players
 		if player.y > 100
 			player.dead = true
-		if player.dead
-			unless window.round_over
-				window.round_over = true
-				setTimeout init_round, 1000
-				round_end_el.textContent = "Round over!"
-				console.log round_end_el.textContent
+	
+	live_players = (player for player in players when not player.dead)
+	dead_players = (player for player in players when player.dead)
+	
+	if live_players.length <= 1
+		# TODO: there should probably be a beat before the round ends
+		# so you can pay attention to the ridiculous death animation
+		# and if there's going to be other ways to die than by a living player,
+		# so we have a time to determine if both players are gonna die
+		unless window.round_over
+			window.round_over = true
+			setTimeout init_round, 1000
+			round_end_el.style.color = ""
+			if live_players[0]
+				round_end_el.textContent = "#{live_players[0].name} wins!".toUpperCase()
+				round_end_el.style.color = live_players[0].color
+			else
+				round_end_el.textContent = "Lethal draw!".toUpperCase()
+			console.log "Round over!"
+			console.log round_end_el.textContent
 
 
 pause = ->
