@@ -1,7 +1,7 @@
 
-class @KeyboardController
+class @KeyboardController extends Controller
 	constructor: (@is_player_2)->
-		@prev_keys = {}
+		super
 		@keys = {}
 		window.addEventListener "keydown", (e)=>
 			# console.log e.keyCode
@@ -25,18 +25,12 @@ class @KeyboardController
 			for key_code in key_codes[key_name]
 				return yes if @keys[key_code]?
 			return no
-		just_pressed = (key_name)=>
-			for key_code in key_codes[key_name]
-				return yes if @keys[key_code]? and not @prev_keys[key_code]?
-			return no
 		
 		@x = pressed("right") - pressed("left")
-		@start_jump = just_pressed("jump")
-		@extend_jump = pressed("jump")
+		@jump = pressed("jump")
 		@descend = pressed("descend")
-		@attack = just_pressed("attack")
-		@block = just_pressed("block")
+		@attack = pressed("attack")
+		@block = pressed("block")
 		@genuflect = pressed("genuflect")
 		
-		delete @prev_keys[k] for k, v of @prev_keys
-		@prev_keys[k] = v for k, v of @keys
+		super

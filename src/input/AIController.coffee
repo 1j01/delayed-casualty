@@ -1,11 +1,11 @@
 
 class @AIController
 	constructor: ->
+		super
 		@aggro_player = null
-		# @otherwise_moving_
+	
 	update: ->
-		props = ["x", "start_jump", "extend_jump", "descend", "attack", "block", "genuflect"]
-		for prop in props
+		for prop in @props
 			@[prop] = random() < 0.1
 		
 		if random() < 0.05

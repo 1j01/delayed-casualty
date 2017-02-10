@@ -82,7 +82,6 @@ class @Player extends MobileEntity
 		@run_animation_time = 0
 		@animator = new Animator {segments}
 		
-		@descend_pressed_last = no
 		@descend = 0
 		@descended = no
 		@descended_wall = no
@@ -117,9 +116,8 @@ class @Player extends MobileEntity
 	step: (world)->
 		@invincibility -= 1
 		@controller.update()
-		if @controller.descend
-			if (not @descend_pressed_last) or @descend > 0
-				@descend = 15
+		if @controller.descend_pressed or (@controller.descend and @descend > 0)
+			@descend = 15
 		else if @descended_wall
 			@descend = 0
 			@descended_wall = no
@@ -127,7 +125,6 @@ class @Player extends MobileEntity
 			@descend = 0
 			@descended = no
 		@descend -= 1
-		@descend_pressed_last = @controller.descend
 		
 		@footing = @collision(world, @x, @y + 1, detecting_footing: yes)
 		@grounded = not not @footing
@@ -225,13 +222,13 @@ class @Player extends MobileEntity
 			@face = +1 if @controller.x > 0
 			@face = -1 if @controller.x < 0
 			
-			if @controller.attack
+			if @controller.attack_pressed
 				console.log "#{@name} attacks"
 				console.log "(delayed)" if @time_until_can_swing > 0
 				@do_swing = true
 				@do_swing_type = "attack"
 			
-			if @controller.block
+			if @controller.block_pressed
 				console.log "#{@name} blocks"
 				console.log "(delayed)" if @time_until_can_swing > 0
 				@do_swing = true
@@ -245,7 +242,7 @@ class @Player extends MobileEntity
 				take_swing(@do_swing_type)
 			
 			if @grounded
-				if @controller.start_jump
+				if @controller.jump_pressed
 					# normal jumping
 					@vy = -@NORMAL_JUMP_VELOCITY
 					@vx += @controller.x
@@ -258,29 +255,6 @@ class @Player extends MobileEntity
 				else
 					# normal movement
 					@vx += @controller.x * @GROUND_ACCELERATION
-			# wall jumping
-			# else if @controller.start_jump
-			# 	if @against_wall_right
-			# 		@vx = @JUMP_VELOCITY * -0.7 unless @controller.x > 0
-			# 		@vy = -@JUMP_VELOCITY
-			# 	else if @against_wall_left
-			# 		@vx = @JUMP_VELOCITY * +0.7 unless @controller.x < 0
-			# 		@vy = -@JUMP_VELOCITY
-			# 	@face = sign(@vx) unless sign(@vx) is 0
-			# else if @against_wall_right
-			# 	if @controller.x < 0
-			# 		@vx = -@LONG_WALL_JUMP_X_VELOCITY
-			# 		@vy = -@LONG_WALL_JUMP_Y_VELOCITY
-			# 	if @controller.start_jump
-			# 		@vx = -@HIGH_WALL_JUMP_X_VELOCITY
-			# 		@vy = -@HIGH_WALL_JUMP_Y_VELOCITY
-			# else if @against_wall_left
-			# 	if @controller.x > 0
-			# 		@vx = +@LONG_WALL_JUMP_X_VELOCITY
-			# 		@vy = -@LONG_WALL_JUMP_Y_VELOCITY
-			# 	if @controller.start_jump
-			# 		@vx = +@HIGH_WALL_JUMP_X_VELOCITY
-			# 		@vy = -@HIGH_WALL_JUMP_Y_VELOCITY
 			else
 				if @against_wall_right
 					@face = +1
@@ -294,32 +268,32 @@ class @Player extends MobileEntity
 							@vy *= 0.7
 						else
 							if @against_wall_right
-								if @controller.x < 0 and @controller.extend_jump # really jump_held
+								if @controller.x < 0 and @controller.jump
 									@vx = -@BIG_WALL_JUMP_X_VELOCITY
 									@vy = -@BIG_WALL_JUMP_Y_VELOCITY
 								else if @controller.x < 0
 									@vx = -@LONG_WALL_JUMP_X_VELOCITY
 									@vy = -@LONG_WALL_JUMP_Y_VELOCITY
-								else if @controller.x > 0 and @controller.extend_jump # really jump_held
+								else if @controller.x > 0 and @controller.jump
 									@vx = -@CLIMBING_WALL_JUMP_X_VELOCITY
 									@vy = -@CLIMBING_WALL_JUMP_Y_VELOCITY
-								else if @controller.extend_jump # really jump_held
+								else if @controller.jump
 									@vx = -@HIGH_WALL_JUMP_X_VELOCITY
 									@vy = -@HIGH_WALL_JUMP_Y_VELOCITY
 								else
 									@vx = -@DEFAULT_WALL_JUMP_X_VELOCITY
 									@vy = -@DEFAULT_WALL_JUMP_Y_VELOCITY
 							else if @against_wall_left
-								if @controller.x > 0 and @controller.extend_jump # really jump_held
+								if @controller.x > 0 and @controller.jump
 									@vx = +@BIG_WALL_JUMP_X_VELOCITY
 									@vy = -@BIG_WALL_JUMP_Y_VELOCITY
 								else if @controller.x > 0
 									@vx = +@LONG_WALL_JUMP_X_VELOCITY
 									@vy = -@LONG_WALL_JUMP_Y_VELOCITY
-								else if @controller.x < 0 and @controller.extend_jump # really jump_held
+								else if @controller.x < 0 and @controller.jump
 									@vx = +@CLIMBING_WALL_JUMP_X_VELOCITY
 									@vy = -@CLIMBING_WALL_JUMP_Y_VELOCITY
-								else if @controller.extend_jump # really jump_held
+								else if @controller.jump
 									@vx = +@HIGH_WALL_JUMP_X_VELOCITY
 									@vy = -@HIGH_WALL_JUMP_Y_VELOCITY
 								else
@@ -332,7 +306,7 @@ class @Player extends MobileEntity
 					@sticking_to_wall = no
 					# air control
 					@vx += @controller.x * @HORIZONTAL_AIR_CONTROL
-					if @controller.extend_jump
+					if @controller.jump
 						@vy -= @VERTICAL_AIR_CONTROL
 					if @against_wall
 						if @descend > 0
