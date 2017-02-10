@@ -2,22 +2,23 @@
 class @World
 	constructor: ->
 		@objects = []
-		@gravity = 0.8
+		@gravity = 0.5
 		@player_1_controller = new KeyboardController(false)
 		@player_2_controller = new CoupledController(
 			new KeyboardController(true)
 			new GamepadController()
 		)
+		@player_3_controller = new AIController()
 		window.addEventListener "hashchange", (e)=>
 			@generate()
 	
 	generate: ->
 		window.debug_mode = location.hash.match /debug/
 		
-		if location.hash.match /test/
-			return @generate_test_map()
+		include_ai = location.hash.match /ai|npc/
 		
 		@objects = []
+		@players = []
 		
 		@objects.push(ground = new Ground({y: 0, h: 1000}))
 		block = (cx, cy, w, h)=>
@@ -30,11 +31,20 @@ class @World
 		block(800, -125, 50, 150)
 		block(1200, -500, 50, 1000)
 		
-		@objects.push(@player_1 = new Player({x: -150, y: ground.y, face: +1, name: "Player 1", color: "#DD4B39", controller: @player_1_controller}))
-		@objects.push(@player_2 = new Player({x: +150, y: ground.y, face: -1, name: "Player 2", color: "#3C81F8", controller: @player_2_controller}))
-		@player_1.find_free_position(@)
-		@player_2.find_free_position(@)
-		@players = [@player_1, @player_2]
+		player_1 = new Player({x: -150, y: ground.y, face: +1, name: "Player 1", color: "#DD4B39", controller: @player_1_controller})
+		player_2 = new Player({x: +150, y: ground.y, face: -1, name: "Player 2", color: "#3C81F8", controller: @player_2_controller})
+		if include_ai
+			player_3 = new Player({x: 0, y: ground.y-250, face: -1, name: "Dumb AI", color: "#FED14C", controller: @player_3_controller})
+		@objects.push(player_1); @players.push(player_1)
+		@objects.push(player_2); @players.push(player_2)
+		if include_ai
+			@objects.push(player_3); @players.push(player_3)
+		player_1.find_free_position(@)
+		player_2.find_free_position(@)
+		if include_ai
+			player_3.find_free_position(@)
+			@player_3_controller.player = player_3
+			@player_3_controller.world = world
 	
 	collision_point: (x, y, {type, filter}={})->
 		for object in world.objects
