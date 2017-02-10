@@ -8,7 +8,6 @@ class @World
 			new KeyboardController(true)
 			new GamepadController()
 		)
-		@player_3_controller = new AIController()
 		window.addEventListener "hashchange", (e)=>
 			@generate()
 	
@@ -33,18 +32,17 @@ class @World
 		
 		player_1 = new Player({x: -150, y: ground.y, face: +1, name: "Player 1", color: "#DD4B39", controller: @player_1_controller})
 		player_2 = new Player({x: +150, y: ground.y, face: -1, name: "Player 2", color: "#3C81F8", controller: @player_2_controller})
-		if include_ai
-			player_3 = new Player({x: 0, y: ground.y-250, face: -1, name: "Dumb AI", color: "#FED14C", controller: @player_3_controller})
 		@objects.push(player_1); @players.push(player_1)
 		@objects.push(player_2); @players.push(player_2)
-		if include_ai
-			@objects.push(player_3); @players.push(player_3)
 		player_1.find_free_position(@)
 		player_2.find_free_position(@)
+		
 		if include_ai
-			player_3.find_free_position(@)
-			@player_3_controller.player = player_3
-			@player_3_controller.world = world
+			ai_player = new Player({x: 0, y: ground.y-250, face: -1, name: "Dumb AI", color: "#FED14C", controller: ai_controller = new AIController})
+			@objects.push(ai_player); @players.push(ai_player)
+			ai_player.find_free_position(@)
+			ai_controller.player = ai_player
+			ai_controller.world = world
 	
 	collision_point: (x, y, {type, filter}={})->
 		for object in world.objects
