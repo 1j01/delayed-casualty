@@ -36,27 +36,26 @@ class @Player extends MobileEntity
 		segment.image = load_silhouette "segments/#{segment.name}"
 	
 	constructor: ->
-		@NORMAL_JUMP_VELOCITY ?= 12
+		@NORMAL_JUMP_VELOCITY ?= 7
 		@LONG_WALL_JUMP_X_VELOCITY ?= 8
 		@LONG_WALL_JUMP_Y_VELOCITY ?= 8
 		@BIG_WALL_JUMP_X_VELOCITY ?= 8
-		@BIG_WALL_JUMP_Y_VELOCITY ?= 12
+		@BIG_WALL_JUMP_Y_VELOCITY ?= 10
 		@HIGH_WALL_JUMP_X_VELOCITY ?= 4
-		@HIGH_WALL_JUMP_Y_VELOCITY ?= 12
-		@DEFAULT_WALL_JUMP_X_VELOCITY ?= 2
-		@DEFAULT_WALL_JUMP_Y_VELOCITY ?= 1
-		# TODO: try switching the default with descend
-		# @DEFAULT_WALL_JUMP_X_VELOCITY ?= 0
-		# @DEFAULT_WALL_JUMP_Y_VELOCITY ?= 0
+		@HIGH_WALL_JUMP_Y_VELOCITY ?= 8
+		# TODO: try having you descend after the wall stick timer runs out
+		# and maybe having the descend control kick off downwards
+		@DEFAULT_WALL_JUMP_X_VELOCITY ?= 0
+		@DEFAULT_WALL_JUMP_Y_VELOCITY ?= 0
 		# @DESCEND_WALL_JUMP_X_VELOCITY ?= 2
 		# @DESCEND_WALL_JUMP_Y_VELOCITY ?= 1
-		@CLIMBING_WALL_JUMP_X_VELOCITY ?= 1
-		@CLIMBING_WALL_JUMP_Y_VELOCITY ?= 8
+		@CLIMBING_WALL_JUMP_X_VELOCITY ?= 2.1
+		@CLIMBING_WALL_JUMP_Y_VELOCITY ?= 5.5
 		
 		# @VERTICAL_AIR_CONTROL ?= 0#0.36
 		# @HORIZONTAL_AIR_CONTROL ?= 0#0.1
-		@VERTICAL_AIR_CONTROL ?= 0
-		@HORIZONTAL_AIR_CONTROL ?= 0.1
+		@VERTICAL_AIR_CONTROL ?= 0.2
+		@HORIZONTAL_AIR_CONTROL ?= 0.3
 		
 		@dead = no
 		@sword_health ?= 100
@@ -90,6 +89,7 @@ class @Player extends MobileEntity
 		@wall_stick_time = 0
 		@sticking_to_wall = no
 		@WALL_STICK_TIME = 10
+		@GROUND_ACCELERATION = 0.5
 		
 		@hitting_player = null
 		@hit_power = 0
@@ -257,7 +257,7 @@ class @Player extends MobileEntity
 						@sliding = abs(@vx) > 5
 				else
 					# normal movement
-					@vx += @controller.x
+					@vx += @controller.x * @GROUND_ACCELERATION
 			# wall jumping
 			# else if @controller.start_jump
 			# 	if @against_wall_right
@@ -288,7 +288,7 @@ class @Player extends MobileEntity
 					@face = -1
 				
 				if @against_wall
-					if @sticking_to_wall and @descend <= 0
+					if @sticking_to_wall and @descend <= 0 and @vy > -2
 						if @wall_stick_time > 0
 							@wall_stick_time--
 							@vy *= 0.7

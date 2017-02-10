@@ -21,7 +21,9 @@ but you can control how (and probably do it earlier) by with the movement keys:
 	* Allow early inputs where appropriate
 
 * Slow things down
-* Ledge grabbing
+* Ledge grabbing (you can climb up a ledge but it's easy to overshoot the platform)
+
+* Anticipate collision with wall for animation
 
 
 ## Fighting

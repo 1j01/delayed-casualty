@@ -64,7 +64,7 @@ animate ->
 	
 	# TODO: maybe replace this with some dynamic splitscreen; it doesn't really feel good
 	# might not be so bad if there's some scenery for spacial awareness though
-	keep_players_in_view_x = 120
+	keep_players_in_view_x = 300
 	keep_players_in_view_y = 60
 	view_scale_to = view.default_scale
 	for player in live_players

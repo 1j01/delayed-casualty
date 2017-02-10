@@ -51,15 +51,15 @@ class @GamepadController
 			return no
 		
 		axis = (axis_index)=>
-			value = (gp?.axes[AXES.LEFT_ANALOGUE_HOR] ? 0)
+			value = (gp?.axes[axis_index] ? 0)
 			# if abs(value) > 0.5 then value else 0
-			if abs(value) > 0.75 then sign(value) else 0
+			if abs(value) > 0.5 then sign(value) else 0
 		
 		# TODO: control high jump etc. with the stick
 		@x = pressed("right") - pressed("left") + axis(AXES.LEFT_ANALOGUE_HOR)
-		@start_jump = just_pressed("jump")
-		@extend_jump = pressed("jump")
-		@descend = pressed("descend")
+		@start_jump = just_pressed("jump") #or axis(AXES.LEFT_ANALOGUE_VERT) < 0
+		@extend_jump = pressed("jump") or axis(AXES.LEFT_ANALOGUE_VERT) < 0
+		@descend = pressed("descend") or axis(AXES.LEFT_ANALOGUE_VERT) > 0
 		@attack = just_pressed("attack")
 		@block = just_pressed("block")
 		@genuflect = pressed("genuflect")

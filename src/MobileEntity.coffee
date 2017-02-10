@@ -3,8 +3,8 @@ class @MobileEntity extends Entity
 	constructor: ->
 		@vx ?= 0
 		@vy ?= 0
-		@max_vx = 15
-		@max_vy = 20
+		@max_vx = 8
+		@max_vy = 15
 		@footing = null
 		@previous_footing = null
 		@grounded = no
@@ -12,7 +12,7 @@ class @MobileEntity extends Entity
 		@level_y ?= @y
 	
 	friction: 0.3
-	running_friction: 0.1
+	running_friction: 0
 	sliding_friction: 0.025
 	air_resistance: 0.001
 	step: (world)->
@@ -40,8 +40,8 @@ class @MobileEntity extends Entity
 		
 		@vx /= 1 + friction
 		
-		if @grounded
-			@vx = min(@max_vx, max(-@max_vx, @vx))
+		# if @grounded
+		@vx = min(@max_vx, max(-@max_vx, @vx))
 		
 		resolution = 20 # higher is better; if too low, you'll slowly slide backwards when on vehicles due to the remainder
 		
