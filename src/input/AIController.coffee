@@ -1,5 +1,5 @@
 
-class @AIController
+class @AIController extends Controller
 	constructor: ->
 		super
 		@aggro_player = null
@@ -17,3 +17,5 @@ class @AIController
 			@x = sign(@aggro_player.x - @player.x)
 		else
 			@x = @player.face # heh um sure
+		
+		super
