@@ -44,22 +44,30 @@ animate ->
 	world.step() unless paused
 	{players} = world
 	
+	for player in players
+		if player.y > 100
+			player.dead = true
+	
+	live_players = (player for player in players when not player.dead)
+	dead_players = (player for player in players when player.dead)
+	
 	# TODO: don't just try to center players,
 	# define and use level boundaries to make the view more useful
+	# TODO: keep dead players in view during the beat before the round is over
 	move_view_to_cx = 0
 	move_view_to_cy = 0
-	for player in players
+	for player in live_players
 		move_view_to_cx += player.x
 		move_view_to_cy += player.y
-	move_view_to_cx /= players.length
-	move_view_to_cy /= players.length
+	move_view_to_cx /= live_players.length
+	move_view_to_cy /= live_players.length
 	
 	# TODO: maybe replace this with some dynamic splitscreen; it doesn't really feel good
 	# might not be so bad if there's some scenery for spacial awareness though
 	keep_players_in_view_x = 120
 	keep_players_in_view_y = 60
 	view_scale_to = view.default_scale
-	for player in players
+	for player in live_players
 		needed_scale_for_player = min(
 			canvas.width / 2 / (abs(player.x - move_view_to_cx) + keep_players_in_view_x)
 			canvas.height / 2 / (abs(player.y - move_view_to_cy) + keep_players_in_view_y)
@@ -80,13 +88,6 @@ animate ->
 	ctx.translate(-view.cx, -view.cy)
 	world.draw(ctx, view)
 	ctx.restore()
-	
-	for player in players
-		if player.y > 100
-			player.dead = true
-	
-	live_players = (player for player in players when not player.dead)
-	dead_players = (player for player in players when player.dead)
 	
 	if live_players.length <= 1
 		unless window.round_ending
