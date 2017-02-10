@@ -36,9 +36,27 @@ class @Player extends MobileEntity
 		segment.image = load_silhouette "segments/#{segment.name}"
 	
 	constructor: ->
-		@jump_velocity ?= 12
-		@jump_velocity_air_control ?= 0.36
-		@air_control ?= 0.1
+		@NORMAL_JUMP_VELOCITY ?= 12
+		@LONG_WALL_JUMP_X_VELOCITY ?= 8
+		@LONG_WALL_JUMP_Y_VELOCITY ?= 8
+		@BIG_WALL_JUMP_X_VELOCITY ?= 8
+		@BIG_WALL_JUMP_Y_VELOCITY ?= 12
+		@HIGH_WALL_JUMP_X_VELOCITY ?= 4
+		@HIGH_WALL_JUMP_Y_VELOCITY ?= 12
+		@DEFAULT_WALL_JUMP_X_VELOCITY ?= 2
+		@DEFAULT_WALL_JUMP_Y_VELOCITY ?= 1
+		# TODO: try switching the default with descend
+		# @DEFAULT_WALL_JUMP_X_VELOCITY ?= 0
+		# @DEFAULT_WALL_JUMP_Y_VELOCITY ?= 0
+		# @DESCEND_WALL_JUMP_X_VELOCITY ?= 2
+		# @DESCEND_WALL_JUMP_Y_VELOCITY ?= 1
+		@CLIMBING_WALL_JUMP_X_VELOCITY ?= 1
+		@CLIMBING_WALL_JUMP_Y_VELOCITY ?= 8
+		
+		# @VERTICAL_AIR_CONTROL ?= 0#0.36
+		# @HORIZONTAL_AIR_CONTROL ?= 0#0.1
+		@VERTICAL_AIR_CONTROL ?= 0
+		@HORIZONTAL_AIR_CONTROL ?= 0.1
 		
 		@dead = no
 		@sword_health ?= 100
@@ -56,18 +74,22 @@ class @Player extends MobileEntity
 		
 		@y -= @h
 		
-		@invincibility = 0
-		# @liveliness_animation_time = 0
-		@run_animation_time = 0
-		
 		@face ?= 1
 		@facing ?= @face
+		
+		@invincibility = 0
+		
+		# @liveliness_animation_time = 0
+		@run_animation_time = 0
+		@animator = new Animator {segments}
 		
 		@descend_pressed_last = no
 		@descend = 0
 		@descended = no
 		@descended_wall = no
-		@animator = new Animator {segments}
+		@wall_stick_time = 0
+		@sticking_to_wall = no
+		@WALL_STICK_TIME = 10
 		
 		@hitting_player = null
 		@hit_power = 0
@@ -225,7 +247,7 @@ class @Player extends MobileEntity
 			if @grounded
 				if @controller.start_jump
 					# normal jumping
-					@vy = -@jump_velocity
+					@vy = -@NORMAL_JUMP_VELOCITY
 					@vx += @controller.x
 				else if @controller.genuflect
 					unless @crouched
@@ -236,29 +258,87 @@ class @Player extends MobileEntity
 				else
 					# normal movement
 					@vx += @controller.x
-			else if @controller.start_jump
-				# wall jumping
-				if @against_wall_right
-					@vx = @jump_velocity * -0.7 unless @controller.x > 0
-					@vy = -@jump_velocity
-				else if @against_wall_left
-					@vx = @jump_velocity * +0.7 unless @controller.x < 0
-					@vy = -@jump_velocity
-				@face = sign(@vx) unless sign(@vx) is 0
+			# wall jumping
+			# else if @controller.start_jump
+			# 	if @against_wall_right
+			# 		@vx = @JUMP_VELOCITY * -0.7 unless @controller.x > 0
+			# 		@vy = -@JUMP_VELOCITY
+			# 	else if @against_wall_left
+			# 		@vx = @JUMP_VELOCITY * +0.7 unless @controller.x < 0
+			# 		@vy = -@JUMP_VELOCITY
+			# 	@face = sign(@vx) unless sign(@vx) is 0
+			# else if @against_wall_right
+			# 	if @controller.x < 0
+			# 		@vx = -@LONG_WALL_JUMP_X_VELOCITY
+			# 		@vy = -@LONG_WALL_JUMP_Y_VELOCITY
+			# 	if @controller.start_jump
+			# 		@vx = -@HIGH_WALL_JUMP_X_VELOCITY
+			# 		@vy = -@HIGH_WALL_JUMP_Y_VELOCITY
+			# else if @against_wall_left
+			# 	if @controller.x > 0
+			# 		@vx = +@LONG_WALL_JUMP_X_VELOCITY
+			# 		@vy = -@LONG_WALL_JUMP_Y_VELOCITY
+			# 	if @controller.start_jump
+			# 		@vx = +@HIGH_WALL_JUMP_X_VELOCITY
+			# 		@vy = -@HIGH_WALL_JUMP_Y_VELOCITY
 			else
-				# air control
-				@vx += @controller.x * @air_control
-				if @controller.extend_jump
-					@vy -= @jump_velocity_air_control
-				if @against_wall
-					if @descend > 0
-						@descended_wall = yes
-					else
-						@vy *= 0.5 if @vy > 0
 				if @against_wall_right
 					@face = +1
 				if @against_wall_left
 					@face = -1
+				
+				if @against_wall
+					if @sticking_to_wall and @descend <= 0
+						if @wall_stick_time > 0
+							@wall_stick_time--
+							@vy *= 0.7
+						else
+							if @against_wall_right
+								if @controller.x < 0 and @controller.extend_jump # really jump_held
+									@vx = -@BIG_WALL_JUMP_X_VELOCITY
+									@vy = -@BIG_WALL_JUMP_Y_VELOCITY
+								else if @controller.x < 0
+									@vx = -@LONG_WALL_JUMP_X_VELOCITY
+									@vy = -@LONG_WALL_JUMP_Y_VELOCITY
+								else if @controller.x > 0 and @controller.extend_jump # really jump_held
+									@vx = -@CLIMBING_WALL_JUMP_X_VELOCITY
+									@vy = -@CLIMBING_WALL_JUMP_Y_VELOCITY
+								else if @controller.extend_jump # really jump_held
+									@vx = -@HIGH_WALL_JUMP_X_VELOCITY
+									@vy = -@HIGH_WALL_JUMP_Y_VELOCITY
+								else
+									@vx = -@DEFAULT_WALL_JUMP_X_VELOCITY
+									@vy = -@DEFAULT_WALL_JUMP_Y_VELOCITY
+							else if @against_wall_left
+								if @controller.x > 0 and @controller.extend_jump # really jump_held
+									@vx = +@BIG_WALL_JUMP_X_VELOCITY
+									@vy = -@BIG_WALL_JUMP_Y_VELOCITY
+								else if @controller.x > 0
+									@vx = +@LONG_WALL_JUMP_X_VELOCITY
+									@vy = -@LONG_WALL_JUMP_Y_VELOCITY
+								else if @controller.x < 0 and @controller.extend_jump # really jump_held
+									@vx = +@CLIMBING_WALL_JUMP_X_VELOCITY
+									@vy = -@CLIMBING_WALL_JUMP_Y_VELOCITY
+								else if @controller.extend_jump # really jump_held
+									@vx = +@HIGH_WALL_JUMP_X_VELOCITY
+									@vy = -@HIGH_WALL_JUMP_Y_VELOCITY
+								else
+									@vx = +@DEFAULT_WALL_JUMP_X_VELOCITY
+									@vy = -@DEFAULT_WALL_JUMP_Y_VELOCITY
+					else
+						@sticking_to_wall = yes
+						@wall_stick_time = @WALL_STICK_TIME
+				else
+					@sticking_to_wall = no
+					# air control
+					@vx += @controller.x * @HORIZONTAL_AIR_CONTROL
+					if @controller.extend_jump
+						@vy -= @VERTICAL_AIR_CONTROL
+					if @against_wall
+						if @descend > 0
+							@descended_wall = yes
+						else
+							@vy *= 0.5 if @vy > 0
 			
 			if @crouched
 				unless @controller.genuflect and @grounded and ((not @sliding) or (@sliding and abs(@vx) > 2))

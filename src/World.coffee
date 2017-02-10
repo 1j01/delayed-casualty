@@ -2,7 +2,7 @@
 class @World
 	constructor: ->
 		@objects = []
-		@gravity = 0.8
+		@gravity = 0.4
 		@player_1_controller = new KeyboardController(false)
 		@player_2_controller = new CoupledController(
 			new KeyboardController(true)
