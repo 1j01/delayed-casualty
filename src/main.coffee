@@ -6,6 +6,7 @@ view = {cx: 0, cy: 0, scale: 2, default_scale: 2, slowness: 8, zoom_slowness: 8}
 paused = no
 window.round_started = no
 window.round_ending = no
+window.round_over = no
 remaining_countdown_seconds = 0
 
 countdown_el = document.createElement("div")
@@ -31,6 +32,7 @@ count_down = ->
 init_round = ->
 	window.round_started = false
 	window.round_ending = false
+	window.round_over = false
 	round_end_el.textContent = ""
 	
 	world.generate()
@@ -51,11 +53,30 @@ animate ->
 	live_players = (player for player in players when not player.dead)
 	dead_players = (player for player in players when player.dead)
 	
-	center_on_players = if live_players.length > 0 then live_players else players
+	if live_players.length <= 1
+		unless window.round_ending
+			window.round_ending = true
+			setTimeout =>
+				window.round_over = true
+				setTimeout init_round, 1000
+				round_end_el.style.color = ""
+				if live_players[0]
+					round_end_el.textContent = "#{live_players[0].name} wins!".toUpperCase()
+					round_end_el.style.color = live_players[0].color
+				else
+					round_end_el.textContent = "Lethal draw!".toUpperCase()
+				console.log "Round over!"
+				console.log round_end_el.textContent
+			, 1000
+	
+	# We keep dead players in view during the beat before the round is over
+	# TODO: should probably keep only live and recently deceased players
+	center_on_players =
+		if live_players.length > 0 and (round_over or not round_ending)
+		then live_players else players
 	
 	# TODO: don't just try to center players,
 	# define and use level boundaries to make the view more useful
-	# TODO: keep dead players in view during the beat before the round is over
 	move_view_to_cx = 0
 	move_view_to_cy = 0
 	for player in center_on_players
@@ -90,21 +111,6 @@ animate ->
 	ctx.translate(-view.cx, -view.cy)
 	world.draw(ctx, view)
 	ctx.restore()
-	
-	if live_players.length <= 1
-		unless window.round_ending
-			window.round_ending = true
-			setTimeout =>
-				setTimeout init_round, 1000
-				round_end_el.style.color = ""
-				if live_players[0]
-					round_end_el.textContent = "#{live_players[0].name} wins!".toUpperCase()
-					round_end_el.style.color = live_players[0].color
-				else
-					round_end_el.textContent = "Lethal draw!".toUpperCase()
-				console.log "Round over!"
-				console.log round_end_el.textContent
-			, 1000
 
 
 pause = ->
