@@ -204,13 +204,13 @@ class @Player extends MobileEntity
 			@face = -1 if @controller.x < 0
 			
 			if @controller.attack
-				console.log "Player attacks"
+				console.log "#{@name} attacks"
 				console.log "(delayed)" if @time_until_can_swing > 0
 				@do_swing = true
 				@do_swing_type = "attack"
 			
 			if @controller.block
-				console.log "Player blocks"
+				console.log "#{@name} blocks"
 				console.log "(delayed)" if @time_until_can_swing > 0
 				@do_swing = true
 				@do_swing_type = "block"
