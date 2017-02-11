@@ -4,7 +4,7 @@ class @MobileEntity extends Entity
 		@vx ?= 0
 		@vy ?= 0
 		@max_vx = 8
-		@max_vy = 15
+		@max_vy = 8
 		@footing = null
 		@previous_footing = null
 		@grounded = no

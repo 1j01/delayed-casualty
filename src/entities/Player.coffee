@@ -97,11 +97,11 @@ class @Player extends MobileEntity
 		@time_until_hit_effect = 0
 		@being_hit = no
 		
-		@swing_radius ?= 60
+		@swing_radius ?= 70
 		@swing_inner_radius ?= 20
 		@swing_from_x ?= @w/2
 		@swing_from_y ?= @h/5
-		@min_time_between_swings = 20
+		@min_time_between_swings = 40
 		@time_until_can_swing = 0
 		@do_swing = no
 		@do_swing_type = null
@@ -201,7 +201,7 @@ class @Player extends MobileEntity
 			
 			if hit_player
 				@hit_power = calculate_hit_power(hit_player)
-				@hit_power += 0.2 if hit_type is "block"
+				@hit_power += 0.3 if hit_type is "block"
 				@hitting_player = hit_player
 				@swing_effect_toward_player = hit_player
 				hit_player.being_hit = true
