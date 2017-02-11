@@ -208,9 +208,6 @@ class @Player extends MobileEntity
 				# FIXME: shouldn't really allow extending the hit timer, at least not indefinitely
 				hit_player.time_until_hit_effect = @time_until_hit_effect =
 					Math.max(hit_player.time_until_hit_effect, @time_until_hit_effect, 30)
-				switch hit_type
-					when "attack" then @attacking = true
-					when "block" then @blocking = true
 				@attacking = hit_type is "attack"
 				@blocking = hit_type is "block"
 			else if got_in_the_way
