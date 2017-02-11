@@ -35,9 +35,9 @@ class @GamepadController extends Controller
 			left: [BUTTONS.PAD_LEFT]
 			jump: [BUTTONS.FACE_1] # not BUTTONS.PAD_TOP; we'd want to I guess trigger a jump if you switch directions for this to work
 			descend: [BUTTONS.PAD_BOTTOM]
-			attack: [BUTTONS.FACE_3]
-			block: [BUTTONS.FACE_2]
-			genuflect: [BUTTONS.LEFT_SHOULDER_BOTTOM, BUTTONS.RIGHT_SHOULDER_BOTTOM]
+			attack: [BUTTONS.RIGHT_SHOULDER_BOTTOM, BUTTONS.RIGHT_SHOULDER, BUTTONS.FACE_3]
+			block: [BUTTONS.LEFT_SHOULDER_BOTTOM, BUTTONS.LEFT_SHOULDER, BUTTONS.FACE_2]
+			genuflect: [BUTTONS.FACE_4]
 		
 		pressed = (control_name)=>
 			return no unless gp
