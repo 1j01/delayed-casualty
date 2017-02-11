@@ -218,6 +218,7 @@ class @Player extends MobileEntity
 			else
 				console.log "and misses"
 		
+		# FIXME: player continues moving when dead
 		unless @dead or not round_started
 			@face = +1 if @controller.x > 0
 			@face = -1 if @controller.x < 0
@@ -402,6 +403,7 @@ class @Player extends MobileEntity
 			
 			# TODO: some blood
 			# TODO: maybe don't explode so completely ridiculously
+			# TODO: place gibs in world coordinates (and probably assume some velocity from the player)
 			unless @gibs
 				@gibs = for segment in @animator.segments
 					placement = calc_frame.dots[segment.a]

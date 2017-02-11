@@ -8,6 +8,7 @@ class @World
 			new KeyboardController(true)
 			new GamepadController()
 		)
+		# TODO: remove this, and use localStorage for settings
 		window.addEventListener "hashchange", (e)=>
 			@generate()
 	
