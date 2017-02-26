@@ -1,20 +1,18 @@
 
-@world = new World()
-layers = [
-	# {scale: 0.5, world: new World()}
-	# {scale: 0.7, world: new World()}
-	{scale: 0.1, world: new World()}
-	{scale: 0.2, world: new World()}
-	{scale: 0.3, world: new World()}
-	{scale: 0.4, world: new World()}
-	{scale: 0.5, world: new World()}
-	{scale: 0.6, world: new World()}
-	{scale: 0.7, world: new World()}
-	{scale: 0.8, world: new World()}
-	# {scale: 0.99, world: new World()}
-	{scale: 1, world}
-	# {scale: 1.01, world: new World()}
-]
+# @world = new World()
+# layers = [
+# 	{scale: 0.5, world: new World()}
+# 	{scale: 0.7, world: new World()}
+# 	# {scale: 0.8, world: new World()}
+# 	# {scale: 0.99, world: new World()}
+# 	{scale: 1, world}
+# 	# {scale: 1.01, world: new World()}
+# ]
+@layers =
+	for i in [20..1]
+		{scale: pow(1/i, 0.2), world: new World()}
+
+@world = layers[layers.length - 1].world
 
 view = {cx: 0, cy: 0, scale: 2, default_scale: 2, slowness: 8, zoom_slowness: 8}
 
@@ -53,7 +51,7 @@ init_round = ->
 	
 	# world.generate()
 	for layer in layers
-		layer.world.generate(bg: layer.scale isnt 1)
+		layer.world.generate(bg: no)#layer.scale isnt 1)
 	
 	remaining_countdown_seconds = if location.hash.match(/(quick|fast)( |-|)start/i) then 0 else 3
 	count_down()
@@ -62,7 +60,10 @@ init_round()
 
 animate ->
 	return if loading
-	world.step() unless paused
+	# world.step() unless paused
+	for layer in layers
+		layer.world.step() unless paused
+	
 	{players} = world
 	
 	for player in players
