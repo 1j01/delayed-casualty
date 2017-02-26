@@ -4,7 +4,6 @@ class @KeyboardController extends Controller
 		super
 		@keys = {}
 		window.addEventListener "keydown", (e)=>
-			# console.log e.keyCode
 			@keys[e.keyCode] = yes
 		window.addEventListener "keyup", (e)=>
 			delete @keys[e.keyCode]

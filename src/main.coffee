@@ -22,6 +22,7 @@ count_down = ->
 		countdown_el.classList.remove("now-fight")
 		countdown_el.textContent = "#{remaining_countdown_seconds}..."
 		remaining_countdown_seconds--
+		# TODO: pause/unpause countdown
 		setTimeout count_down, 1000
 	else
 		countdown_el.textContent = "FIGHT!"
@@ -71,6 +72,7 @@ animate ->
 	
 	# We keep dead players in view during the beat before the round is over
 	# TODO: should probably keep only live and recently deceased players
+	# in the case of more than two players; but this is probably a 2 player only game
 	center_on_players =
 		if live_players.length > 0 and (round_over or not round_ending)
 		then live_players else players
@@ -87,17 +89,17 @@ animate ->
 	
 	# TODO: maybe replace this with some dynamic splitscreen; it doesn't really feel good
 	# might not be so bad if there's some scenery for spacial awareness though
-	keep_players_in_view_x = 300
-	keep_players_in_view_y = 60
+	player_view_margin_x = 300
+	player_view_margin_y = 60
 	view_scale_to = view.default_scale
 	for player in center_on_players
 		needed_scale_for_player = min(
-			canvas.width / 2 / (abs(player.x - move_view_to_cx) + keep_players_in_view_x)
-			canvas.height / 2 / (abs(player.y - move_view_to_cy) + keep_players_in_view_y)
+			canvas.width / 2 / (abs(player.x - move_view_to_cx) + player_view_margin_x)
+			canvas.height / 2 / (abs(player.y - move_view_to_cy) + player_view_margin_y)
 		)
 		view_scale_to = min(view_scale_to, needed_scale_for_player)
 	
-	move_view_to_cx = min(400*16 - canvas.width/2, max(-400*16 + canvas.width/2, move_view_to_cx)) # https://github.com/atom/language-coffee-script/issues/112
+	move_view_to_cx = min(400*16 - canvas.width/2, max(-400*16 + canvas.width/2, move_view_to_cx))
 	view.cx += (move_view_to_cx - view.cx) / view.slowness
 	view.cy += (move_view_to_cy - view.cy) / view.slowness
 	view.scale += (view_scale_to - view.scale) / view.zoom_slowness

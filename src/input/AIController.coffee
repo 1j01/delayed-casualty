@@ -16,6 +16,6 @@ class @AIController extends Controller
 		if @aggro_player
 			@x = sign(@aggro_player.x - @player.x)
 		else
-			@x = @player.face # heh um sure
+			@x = @player.face # heh um sure just keep doin' what ur doin'
 		
 		super

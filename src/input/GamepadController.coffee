@@ -33,7 +33,7 @@ class @GamepadController extends Controller
 		button_codes =
 			right: [BUTTONS.PAD_RIGHT]
 			left: [BUTTONS.PAD_LEFT]
-			jump: [BUTTONS.FACE_1] # not BUTTONS.PAD_TOP; we'd want to I guess trigger a jump if you switch directions for this to work
+			jump: [BUTTONS.FACE_1] # not BUTTONS.PAD_TOP; we'd want to I guess trigger a jump if you switch directions for this to be viable
 			descend: [BUTTONS.PAD_BOTTOM]
 			attack: [BUTTONS.RIGHT_SHOULDER_BOTTOM, BUTTONS.RIGHT_SHOULDER, BUTTONS.FACE_3]
 			block: [BUTTONS.LEFT_SHOULDER_BOTTOM, BUTTONS.LEFT_SHOULDER, BUTTONS.FACE_2]

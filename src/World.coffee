@@ -39,13 +39,10 @@ class @World
 		player_2 = new Player({x: +150, y: ground.y, face: -1, name: "Player 2", color: "#3C81F8", controller: @player_2_controller})
 		@objects.push(player_1); @players.push(player_1)
 		@objects.push(player_2); @players.push(player_2)
-		# player_1.find_free_position(@)
-		# player_2.find_free_position(@)
 		
 		if include_ai
 			ai_player = new Player({x: 0, y: ground.y-250, face: -1, name: "Dumb AI", color: "#FED14C", controller: ai_controller = new AIController})
 			@objects.push(ai_player); @players.push(ai_player)
-			# ai_player.find_free_position(@)
 			ai_controller.player = ai_player
 			ai_controller.world = world
 	

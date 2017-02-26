@@ -52,8 +52,6 @@ class @Player extends MobileEntity
 		@CLIMBING_WALL_JUMP_X_VELOCITY ?= 2.1
 		@CLIMBING_WALL_JUMP_Y_VELOCITY ?= 5.5
 		
-		# @VERTICAL_AIR_CONTROL ?= 0#0.36
-		# @HORIZONTAL_AIR_CONTROL ?= 0#0.1
 		@VERTICAL_AIR_CONTROL ?= 0.2
 		@HORIZONTAL_AIR_CONTROL ?= 0.3
 		
@@ -409,8 +407,6 @@ class @Player extends MobileEntity
 					placement = calc_frame.dots[segment.a]
 					towards = calc_frame.dots[segment.b]
 					angle = atan2(towards.y - placement.y, towards.x - placement.x) - TAU/4
-					# {x: placement.x, y: placement.y, angle, image: segment.image}
-					# {placement, angle, image: segment.image}
 					{
 						x: placement.x, y: placement.y, angle
 						x_vel: rand(-20, 20)
@@ -426,8 +422,6 @@ class @Player extends MobileEntity
 				ctx.translate(gib.x - calc_frame.width/2, gib.y - calc_frame.height)
 				ctx.rotate(gib.angle)
 				ctx.scale(@face, 1)
-				# ctx.translate(-pivot.x+segment.image.width/2, -pivot.y)
-				# ctx.drawImage(gib.image, -gib.image.width/2, 0)
 				ctx.drawImage(gib.image, -gib.image.width/2, -gib.image.height/2)
 				ctx.restore()
 				gib.angle += gib.angle_vel
@@ -442,12 +436,6 @@ class @Player extends MobileEntity
 		# TODO: represent sword! can't tell when your sword is destroyed!
 	
 	draw_fx: (ctx, view)->
-		# if @dead
-		# 	ctx.save()
-		# 	ctx.globalCompositeOperation = "screen"
-		# 	ctx.fillStyle = "red"
-		# 	ctx.fillRect(@x, @y - 10, @w, @h + 15)
-		# 	ctx.restore()
 		
 		if @swing_effect
 			player = @swing_effect_toward_player
@@ -457,7 +445,7 @@ class @Player extends MobileEntity
 			if player
 				angle = atan2(player.y - @y, player.x - @x)
 				swing_right = player.x > @x
-			# NOTE: probably shouldn't be able to attack while wall-sliding (or most characters shouldn't)
+			# NOTE: probably shouldn't be able to attack while on a wall (or most characters shouldn't)
 			else if @against_wall_left and not @against_wall_right
 				angle = atan2(0, +1)
 				swing_right = yes
@@ -535,8 +523,6 @@ class @Player extends MobileEntity
 					sword_damage = max(0.1, @hitting_player.hit_power - @hit_power)
 					@sword_health -= sword_damage
 					console.log "sword health @", @sword_health, "(damaged by #{sword_damage})"
-					# if @sword_health <= 0
-					# 	
 			
 			@hitting_player = null
 			setTimeout => # FIXME HACK XXX
@@ -559,17 +545,5 @@ class @Player extends MobileEntity
 		ctx.font = "12px sans-serif"
 		ctx.textAlign = "center"
 		ctx.fillStyle = @color
-		# ctx.fillText @name, @x + @w/2, @y - @h/2
-		# ctx.fillText @name, @x + @w/2, @y + @h * 1.8
 		ctx.fillText @name, @x + @w/2, @y + @h + @normal_h * 0.5
 		ctx.restore()
-		
-		# if window.debug_mode
-		# 	ctx.save()
-		# 	ctx.font = "16px sans-serif"
-		# 	ctx.textAlign = "center"
-		# 	ctx.fillStyle = "#f0f"
-		# 	# ctx.fillText @level_y, @x, @y
-		# 	# ctx.fillText @face, @x + @w/2, @y - @h/2
-		# 	ctx.fillText @facing, @x + @w/2, @y - @h/2
-		# 	ctx.restore()

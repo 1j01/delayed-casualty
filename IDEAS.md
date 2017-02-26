@@ -5,17 +5,6 @@ Note: screenshots already leaked here: http://tvtropes.org/pmwiki/pmwiki.php/Mai
 
 ## Movement
 
-It's supposed to be slower paced than Lethal League.
-
-You'll stick to walls for wall jumps, and automatically kick off of a wall after some time,
-but you can control how (and probably do it earlier) by with the movement keys:
-
-* press away from the wall to do a long jump,
-* up to do a high jump (still kicking away a bit),
-* up and away to jump up and away more,
-* and down to fall downwards,
-* the default being to kick off and go downwards at an angle.
-
 * Input
 	* A library for (especially multiplayer) gamepad and keyboard(/+mouse) assignment and remapping, including UI
 		* Mobile controls
@@ -29,8 +18,6 @@ but you can control how (and probably do it earlier) by with the movement keys:
 	* Allow early inputs where appropriate
 
 * Ledge grabbing (you can climb up a ledge but it's easy to overshoot the platform)
-
-* Anticipate collision with wall for animation
 
 
 ## Fighting
@@ -125,3 +112,5 @@ but as you play with them you start to notice significant differences.
 		* SFX volume
 		* Music volume
 	* Credits
+
+* Anticipate collision with wall for animation

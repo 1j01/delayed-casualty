@@ -40,7 +40,6 @@ class @MobileEntity extends Entity
 		
 		@vx /= 1 + friction
 		
-		# if @grounded
 		@vx = min(@max_vx, max(-@max_vx, @vx))
 		
 		resolution = 20 # higher is better; if too low, you'll slowly slide backwards when on vehicles due to the remainder
@@ -53,19 +52,6 @@ class @MobileEntity extends Entity
 		
 		if @face?
 			# push you back or forwards if you're off the edge of what you're standing on
-
-			# # unless @controller?.x < 0
-			# if @face < 0
-			# 	if @x + @w*1/3 > @footing.x + @footing.w
-			# 		@vx -= 0.5
-			# # unless @controller?.x > 0
-			# if @face > 0
-			# 	if @x + @w*2/3 < @footing.x
-			# 		@vx += 0.5
-			# if @x + @w*1/3 > @footing.x + @footing.w
-			# 	@vx += 0.5 * @face
-			# if @x + @w*2/3 < @footing.x
-			# 	@vx += 0.5 * @face
 			
 			dist_off_of_ledge_to_push_off = @w * 1/3
 			dist_off_of_ledge_to_pull_on = @w * 1/2
@@ -128,7 +114,3 @@ class @MobileEntity extends Entity
 				# 		continue
 				return object
 		return no
-	
-	find_free_position: (world)->
-		while @collision(world, @x, @y)
-			@x += 16 * ~~(random() * 2 + 1) * (if random() < 0.5 then +1 else -1)
