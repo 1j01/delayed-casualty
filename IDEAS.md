@@ -18,9 +18,16 @@ but you can control how (and probably do it earlier) by with the movement keys:
 
 * Input
 	* A library for (especially multiplayer) gamepad and keyboard(/+mouse) assignment and remapping, including UI
+		* Mobile controls
+		* Could support smartphone-as-a-controller, a la [node-virtual-gamepads](https://github.com/miroof/node-virtual-gamepads) or [nunchuck.js](https://github.com/ehzhang/nunchuck)
+		* Provide names and visuals for inputs
+			* Allow easy usage inside help text
+		* UI that can be overridden at multiple levels,
+		  i.e. either themes that can make functional changes or
+		  themes combined with other points to modify or replace the UI
+		  (VR, anyone?)
 	* Allow early inputs where appropriate
 
-* Slow things down
 * Ledge grabbing (you can climb up a ledge but it's easy to overshoot the platform)
 
 * Anticipate collision with wall for animation
@@ -64,6 +71,8 @@ with the jumping and the slice-a-dicing and not so much of the blocking.
 * Scarves/hair/capes/cloaks/whatever get cut off, and then five seconds later... shloomp, off goes the head
 
 * Indicate 50% & 25% sword health audio-visually
+AND ALSO 0% because that's kind of important
+
 
 ## Characters
 

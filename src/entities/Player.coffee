@@ -58,7 +58,7 @@ class @Player extends MobileEntity
 		@HORIZONTAL_AIR_CONTROL ?= 0.3
 		
 		@dead = no
-		@sword_health ?= 100
+		@sword_health ?= 1
 		
 		@w ?= 16*1
 		@h ?= 16*2
@@ -193,6 +193,10 @@ class @Player extends MobileEntity
 			return power
 		
 		take_swing = (hit_type)=>
+			if @sword_health <= 0
+				console.log "can't take a swing; no sword!"
+				return
+			
 			{hit_player, got_in_the_way} = check_for_player_hit()
 			# TODO: maybe show different feedback if an object got in the way
 			
@@ -201,7 +205,6 @@ class @Player extends MobileEntity
 			
 			if hit_player
 				@hit_power = calculate_hit_power(hit_player)
-				@hit_power += 0.3 if hit_type is "block"
 				@hitting_player = hit_player
 				@swing_effect_toward_player = hit_player
 				hit_player.being_hit = true
@@ -435,6 +438,8 @@ class @Player extends MobileEntity
 		else
 			@animator.draw ctx, draw_height, root_frames, @face, @facing
 		ctx.restore()
+		
+		# TODO: represent sword! can't tell when your sword is destroyed!
 	
 	draw_fx: (ctx, view)->
 		# if @dead
@@ -509,22 +514,29 @@ class @Player extends MobileEntity
 			if @hitting_player
 				console.log @name, "vs", @hitting_player.name
 				console.log "power:", @hit_power, "vs", @hitting_player.hit_power
-				if @hit_power > @hitting_player.hit_power + 0.001
-					if @attacking
-						console.log "KILL"
+				unless @hitting_player.blocking
+					if @hit_power > @hitting_player.hit_power + 0.001
+						if @attacking and not @hitting_player.blocking
+							console.log "KILL"
+							@hitting_player.dead = true
+						else
+							console.log "BLOCKED"
+					else if @hit_power < @hitting_player.hit_power - 0.001
+						if @hitting_player.attacking and not @blocking
+							console.log "DEAD"
+						else
+							console.log "BLOCKED"
+					else if @attacking and @hitting_player.attacking
+						console.log "LETHAL DRAW"
 						@hitting_player.dead = true
 					else
-						console.log "BLOCKED"
-				else if @hit_power < @hitting_player.hit_power - 0.001
-					if @hitting_player.attacking
-						console.log "DEAD"
-					else
-						console.log "BLOCKED"
-				else if @attacking and @hitting_player.attacking
-					console.log "LETHAL DRAW"
-					@hitting_player.dead = true
-				else
-					console.log "DRAW"
+						console.log "DRAW"
+				if @blocking
+					sword_damage = max(0.1, @hitting_player.hit_power - @hit_power)
+					@sword_health -= sword_damage
+					console.log "sword health @", @sword_health, "(damaged by #{sword_damage})"
+					# if @sword_health <= 0
+					# 	
 			
 			@hitting_player = null
 			setTimeout => # FIXME HACK XXX
