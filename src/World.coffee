@@ -12,7 +12,7 @@ class @World
 		window.addEventListener "hashchange", (e)=>
 			@generate()
 	
-	generate: ->
+	generate: ({bg})->
 		window.debug_mode = location.hash.match /debug/
 		
 		include_ai = location.hash.match /ai|npc/
@@ -35,16 +35,17 @@ class @World
 		block(level_width/2, -500, 50, level_height) # walls
 		block(0, -level_height, level_width+50, 50) # ceiling
 		
-		player_1 = new Player({x: -150, y: ground.y, face: +1, name: "Player 1", color: "#DD4B39", controller: @player_1_controller})
-		player_2 = new Player({x: +150, y: ground.y, face: -1, name: "Player 2", color: "#3C81F8", controller: @player_2_controller})
-		@objects.push(player_1); @players.push(player_1)
-		@objects.push(player_2); @players.push(player_2)
-		
-		if include_ai
-			ai_player = new Player({x: 0, y: ground.y-250, face: -1, name: "Dumb AI", color: "#FED14C", controller: ai_controller = new AIController})
-			@objects.push(ai_player); @players.push(ai_player)
-			ai_controller.player = ai_player
-			ai_controller.world = world
+		unless bg
+			player_1 = new Player({x: -150, y: ground.y, face: +1, name: "Player 1", color: "#DD4B39", controller: @player_1_controller})
+			player_2 = new Player({x: +150, y: ground.y, face: -1, name: "Player 2", color: "#3C81F8", controller: @player_2_controller})
+			@objects.push(player_1); @players.push(player_1)
+			@objects.push(player_2); @players.push(player_2)
+			
+			if include_ai
+				ai_player = new Player({x: 0, y: ground.y-250, face: -1, name: "Dumb AI", color: "#FED14C", controller: ai_controller = new AIController})
+				@objects.push(ai_player); @players.push(ai_player)
+				ai_controller.player = ai_player
+				ai_controller.world = world
 	
 	collision_point: (x, y, {type, filter}={})->
 		for object in world.objects

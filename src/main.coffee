@@ -1,5 +1,20 @@
 
 @world = new World()
+layers = [
+	# {scale: 0.5, world: new World()}
+	# {scale: 0.7, world: new World()}
+	{scale: 0.1, world: new World()}
+	{scale: 0.2, world: new World()}
+	{scale: 0.3, world: new World()}
+	{scale: 0.4, world: new World()}
+	{scale: 0.5, world: new World()}
+	{scale: 0.6, world: new World()}
+	{scale: 0.7, world: new World()}
+	{scale: 0.8, world: new World()}
+	# {scale: 0.99, world: new World()}
+	{scale: 1, world}
+	# {scale: 1.01, world: new World()}
+]
 
 view = {cx: 0, cy: 0, scale: 2, default_scale: 2, slowness: 8, zoom_slowness: 8}
 
@@ -36,7 +51,10 @@ init_round = ->
 	window.round_over = false
 	round_end_el.textContent = ""
 	
-	world.generate()
+	# world.generate()
+	for layer in layers
+		layer.world.generate(bg: layer.scale isnt 1)
+	
 	remaining_countdown_seconds = if location.hash.match(/(quick|fast)( |-|)start/i) then 0 else 3
 	count_down()
 
@@ -104,15 +122,25 @@ animate ->
 	view.cy += (move_view_to_cy - view.cy) / view.slowness
 	view.scale += (view_scale_to - view.scale) / view.zoom_slowness
 	
-	ctx.fillStyle = "#a9bcd6"
+	BG_FILL = "#a9bcd6"
+	FOG = 1/2
+	
+	ctx.fillStyle = BG_FILL
 	ctx.fillRect(0, 0, canvas.width, canvas.height)
 	
-	ctx.save()
-	ctx.translate(canvas.width/2, canvas.height/2)
-	ctx.scale(view.scale, view.scale)
-	ctx.translate(-view.cx, -view.cy)
-	world.draw(ctx, view)
-	ctx.restore()
+	for layer in layers
+		ctx.save()
+		ctx.globalAlpha = layer.scale * FOG
+		ctx.fillStyle = BG_FILL
+		ctx.fillRect(0, 0, canvas.width, canvas.height)
+		ctx.restore()
+		
+		ctx.save()
+		ctx.translate(canvas.width/2, canvas.height/2)
+		ctx.scale(view.scale * layer.scale, view.scale * layer.scale)
+		ctx.translate(-view.cx, -view.cy)
+		layer.world.draw(ctx, view)
+		ctx.restore()
 
 
 pause = ->
