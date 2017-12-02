@@ -6,16 +6,17 @@ Note: screenshots already leaked here: http://tvtropes.org/pmwiki/pmwiki.php/Mai
 ## Movement
 
 * Input
-	* A library for (especially multiplayer) gamepad and keyboard(/+mouse) assignment and remapping, including UI
-		* Mobile controls
-		* Could support smartphone-as-a-controller, a la [node-virtual-gamepads](https://github.com/miroof/node-virtual-gamepads) or [nunchuck.js](https://github.com/ehzhang/nunchuck)
-		* Provide names and visuals for inputs
-			* Allow easy usage inside help text
-		* UI that can be overridden at multiple levels,
-		  i.e. either themes that can make functional changes or
-		  themes combined with other points to modify or replace the UI
-		  (VR, anyone?)
+	* [A library for gamepad and keyboard input assignment and remapping, including UI](https://github.com/multiism/input-control)
 	* Allow early inputs where appropriate
+
+* Press down to land on platforms easier
+	* Head towards zero velocity in air
+	* Don't fall off ledges
+	* Maybe holding left and right could do this too, or... would that just be confusing?
+
+* Going down walls
+	* Remove wall-slipping (just stick to walls)
+	* Add friction when wall-dropping (or it would be "descending", rather; and would it be necessary then?)
 
 * Ledge grabbing (you can climb up a ledge but it's easy to overshoot the platform)
 
@@ -37,7 +38,7 @@ Note: screenshots already leaked here: http://tvtropes.org/pmwiki/pmwiki.php/Mai
 	* WIN/LOSE
 		* a player falls into an abyss
 	* DRAW
-		* time runs out (should a timer always be visible, or should it maybe only appear after a while?)
+		* time runs out
 	* LETHAL DRAW
 		* both players fall into an abyss
 
@@ -53,7 +54,11 @@ with the jumping and the slice-a-dicing and not so much of the blocking.
 
 * Maybe the timing for blocking could be based on when the other player attacks?
 
-* Use rendered player for hit detection, or at least a better hitbox
+* Make outcomes more predictable at close range
+	* by weighting the height advantage less at closer range 
+	* or maybe making the height advantage more linear or exponential or logarithmic instead of angular
+
+* Use rendered player for hit detection, or at least have a better hitbox
 
 * Scarves/hair/capes/cloaks/whatever get cut off, and then five seconds later... shloomp, off goes the head
 
@@ -61,13 +66,14 @@ with the jumping and the slice-a-dicing and not so much of the blocking.
 AND ALSO 0% because that's kind of important
 
 
-## Characters
+## Characters (maybe)
 
 Like Lethal League does really well,
-the characters should seem aesthetic at first,
+the characters might seem aesthetic at first,
 but as you play with them you start to notice significant differences.
 
 * characters
+	* eh, maybe no characters
 	* two hit wonder
 		* two swords
 		* average power higher for two successful hits, lower for one
@@ -76,7 +82,7 @@ but as you play with them you start to notice significant differences.
 	* bamboozler
 		* wields reed staff (not bamboo)
 		* staff can be cut off at one or two points, so very little durability
-		* could be dynamic, being cut off based on the attacker's distance, which should encourage
+		* could be dynamic, being cut off based on the attacker's distance, which should encourage... keeping a distance?
 		* low damage probably
 		* Yeccalio - cold icy miserable salt marsh
 	* knife guy
@@ -103,6 +109,14 @@ but as you play with them you start to notice significant differences.
 
 
 ## Misc
+
+* Global timescale
+	* For development, seeing animations and behavior in detail
+	* Option for custom matches
+
+* Round timer
+
+* Dissuade/limit strategy of running out the clock (esp. for best-of matches)
 
 * Screens
 	* Title
