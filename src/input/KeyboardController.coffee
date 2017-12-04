@@ -10,7 +10,7 @@ class @KeyboardController extends Controller
 	
 	update: ->
 		# arrow keys, WASD, and IJKL
-		# should really specify these without keycodes and corresponding comments
+		# TODO: use `key` instead of `keyCode` and remove the need for comments here
 		key_codes =
 			right: if @is_player_2 then [39] else [68, 76] # right; D, L
 			left: if @is_player_2 then [37] else [65, 74] # left; A, J

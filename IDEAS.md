@@ -3,6 +3,11 @@
 
 Note: screenshots already leaked here: http://tvtropes.org/pmwiki/pmwiki.php/Main/SingleStrokeBattle
 
+http://tvtropes.org/pmwiki/pmwiki.php/Main/DelayedCausality
+
+http://tvtropes.org/pmwiki/pmwiki.php/Main/SwordLines
+
+
 ## Movement
 
 * Input
@@ -13,6 +18,7 @@ Note: screenshots already leaked here: http://tvtropes.org/pmwiki/pmwiki.php/Mai
 	* Head towards zero velocity in air
 	* Don't fall off ledges
 	* Maybe holding left and right could do this too, or... would that just be confusing?
+	* Maybe course-correct towards platforms within some margin too?
 
 * Going down walls
 	* Remove wall-slipping (just stick to walls)
