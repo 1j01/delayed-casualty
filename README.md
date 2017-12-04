@@ -1,4 +1,4 @@
-# [<img alt="Delayed Casualty" src="./images/title/title-readme.png" height="125">](http://1j01.github.io/delayed-causualty/)
+# [<img alt="Delayed Casualty" src="./images/title/title-readme.png" height="125">](http://1j01.github.io/delayed-casualty/)
 
 A swordfighting game with simple but unique mechanics.
 
