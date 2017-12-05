@@ -1,6 +1,6 @@
 
 class @World
-	constructor: ->
+	constructor: ({@is_background_layer})->
 		@objects = []
 		@gravity = 0.4
 		@player_1_controller = new KeyboardController(false)
@@ -12,9 +12,9 @@ class @World
 		window.addEventListener "hashchange", (e)=>
 			@generate()
 	
-	generate: ({bg})->
+	generate: ->
 		window.debug_mode = location.hash.match /debug/
-		
+		include_players = (not @is_background_layer) or location.hash.match /crazy|mirror/
 		include_ai = location.hash.match /ai|npc/
 		
 		@objects = []
@@ -35,7 +35,7 @@ class @World
 		block(level_width/2, -500, 50, level_height) # walls
 		block(0, -level_height, level_width+50, 50) # ceiling
 		
-		unless bg
+		if include_players
 			player_1 = new Player({x: -150, y: ground.y, face: +1, name: "Player 1", color: "#DD4B39", controller: @player_1_controller})
 			player_2 = new Player({x: +150, y: ground.y, face: -1, name: "Player 2", color: "#3C81F8", controller: @player_2_controller})
 			@objects.push(player_1); @players.push(player_1)
@@ -45,10 +45,10 @@ class @World
 				ai_player = new Player({x: 0, y: ground.y-250, face: -1, name: "Dumb AI", color: "#FED14C", controller: ai_controller = new AIController})
 				@objects.push(ai_player); @players.push(ai_player)
 				ai_controller.player = ai_player
-				ai_controller.world = world
+				ai_controller.world = @
 	
 	collision_point: (x, y, {type, filter}={})->
-		for object in world.objects
+		for object in @objects
 			if type? and object not instanceof type
 				continue # as in don't continue with this one
 			if filter? and not filter(object)

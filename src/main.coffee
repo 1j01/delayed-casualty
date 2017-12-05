@@ -9,10 +9,19 @@
 # 	# {scale: 1.01, world: new World()}
 # ]
 @layers =
-	for i in [20..1]
-		{scale: pow(1/i, 0.2), world: new World()}
+	for i in [20...1]
+		{scale: pow(1/i, 0.2), world: new World(is_background_layer: yes)}
 
-@world = layers[layers.length - 1].world
+@world = new World(is_background_layer: no)
+@layers.push({scale: 1, world: @world})
+
+# @world = layers[layers.length - 1].world
+
+# @world.player_1_controller = new KeyboardController(false)
+# @world.player_2_controller = new CoupledController(
+# 	new KeyboardController(true)
+# 	new GamepadController()
+# )
 
 view = {cx: 0, cy: 0, scale: 2, default_scale: 2, slowness: 8, zoom_slowness: 8}
 
