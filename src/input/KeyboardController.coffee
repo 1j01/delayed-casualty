@@ -2,27 +2,28 @@
 class @KeyboardController extends Controller
 	constructor: (@is_player_2)->
 		super
+		# TODO: use `code` instead of `key` when browser support is good
 		@keys = {}
 		window.addEventListener "keydown", (e)=>
-			@keys[e.keyCode] = yes
+			@keys[e.key] = yes
 		window.addEventListener "keyup", (e)=>
-			delete @keys[e.keyCode]
+			delete @keys[e.key]
 	
 	update: ->
-		# arrow keys, WASD, and IJKL
-		# TODO: use `key` instead of `keyCode` and remove the need for comments here
-		key_codes =
-			right: if @is_player_2 then [39] else [68, 76] # right; D, L
-			left: if @is_player_2 then [37] else [65, 74] # left; A, J
-			jump: if @is_player_2 then [38] else [87, 73, 32] # up; W, I, space
-			descend: if @is_player_2 then [40] else [83, 75] # down; S, K
-			attack: if @is_player_2 then [190] else [71] # ., G
-			block: if @is_player_2 then [191] else [72] # /, H
-			genuflect: if @is_player_2 then [17, 90] else [16] # shift, Z; ctrl
+		keymap =
+			right: if @is_player_2 then ["ArrowRight"] else ["D", "L"]
+			left: if @is_player_2 then ["ArrowLeft"] else ["A", "J"]
+			jump: if @is_player_2 then ["ArrowUp"] else ["W", "I", " "]
+			descend: if @is_player_2 then ["ArrowDown"] else ["S", "K"]
+			attack: if @is_player_2 then ["."] else ["G"]
+			block: if @is_player_2 then ["/"] else ["H"]
+			genuflect: if @is_player_2 then ["Shift", "Z"] else ["Control"]
 		
-		pressed = (key_name)=>
-			for key_code in key_codes[key_name]
-				return yes if @keys[key_code]?
+		pressed = (control_name)=>
+			for key_name in keymap[control_name]
+				return yes if @keys[key_name]?
+				if key_name.length is 1
+					return yes if @keys[key_name.toLowerCase()]?
 			return no
 		
 		@x = pressed("right") - pressed("left")
